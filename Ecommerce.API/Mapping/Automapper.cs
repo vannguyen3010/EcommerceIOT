@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Entities.Models;
+using Shared.DTO.Contact;
 using Shared.DTO.User;
 
 namespace Ecommerce.API.Mapping
@@ -9,6 +10,12 @@ namespace Ecommerce.API.Mapping
         public Automapper()
         {
             CreateMap<RegisterDto, User>();
+
+            CreateMap<User, UserDto>();
+
+            CreateMap<CreateContactDto, Contact>();
+
+            CreateMap<Contact, ContactDto>();
 
         }
     }

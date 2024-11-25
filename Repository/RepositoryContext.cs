@@ -18,5 +18,7 @@ namespace Repository
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new RoleAssignmentConfiguration());
         }
+
+        public DbSet<Contact> Contacts { get; set; }
     }
 }
