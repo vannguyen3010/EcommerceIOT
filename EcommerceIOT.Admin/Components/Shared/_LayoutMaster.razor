@@ -1,0 +1,20 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@inherits LayoutComponentBase
+
+<div class="tap-top">
+    <span class="lnr lnr-chevron-up"></span>
+</div>
+
+<div class="page-wrapper compact-wrapper" id="pageWrapper">
+
+    <_P_Header />
+
+    <div class="page-body-wrapper">
+        <div class="sidebar-wrapper sidebar_wrapper">
+            <div id="sidebarEffect"></div>
+            <_P_Sidebar />
+        </div>
+        @Body
+    </div>
+
+</div>
