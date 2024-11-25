@@ -22,6 +22,39 @@ namespace Ecommerce.API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Entities.Models.Contact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Contacts");
+                });
+
             modelBuilder.Entity("Entities.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -97,18 +130,18 @@ namespace Ecommerce.API.Migrations
                         {
                             Id = "7b72a55e-0189-4665-87ab-b8c4a44e00f0",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3faff1cb-8785-4d3d-bb62-a13275946960",
-                            CreateAt = new DateTime(2024, 11, 25, 8, 47, 6, 170, DateTimeKind.Utc).AddTicks(3388),
+                            ConcurrencyStamp = "ae37dc50-de91-42a8-b9ff-14191dc3ef6b",
+                            CreateAt = new DateTime(2024, 11, 25, 17, 3, 26, 685, DateTimeKind.Utc).AddTicks(2924),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "SUPERADMIN@GMAIL.COM",
                             NormalizedUserName = "NGUOIDEV",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKWXmN1mQbEdYj6SaTr+eyziow5PD5ZW5ywznij5QLaYv9p/xJdwxsmsMnC2y9C34A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL8L5tuQEdU+7ZvW7cO9Cr7AZAzoxllHJM84XANpPxVywDbXJ3C9lhdrjv7RXwTwNw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
-                            UpdateAt = new DateTime(2024, 11, 25, 8, 47, 6, 170, DateTimeKind.Utc).AddTicks(3390),
+                            UpdateAt = new DateTime(2024, 11, 25, 17, 3, 26, 685, DateTimeKind.Utc).AddTicks(2926),
                             UserName = "NguoiDev"
                         });
                 });

@@ -1,0 +1,21 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using EcommerceIOT.Client.Services
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+@using EcommerceIOT.Client
+@using EcommerceIOT.Client.Components
+@using Microsoft.AspNetCore.Components.Authorization
+
+@using EcommerceIOT.Client.Components.Shared
+
+@inject NavigationManager NavigationManager
+
+@inject AccountServices _accountServices
+
+@using global::Shared.DTO.User
+@using global::Shared.DTO.Response

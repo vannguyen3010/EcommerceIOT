@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shared.DTO.Response;
 using Shared.DTO.User;
 using Shared.Enum;
@@ -107,6 +108,35 @@ namespace Ecommerce.API.Controllers
             await _userManager.ResetAccessFailedCountAsync(user);
 
             return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
+        }
+
+        [HttpGet]
+        [Route("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                var users = await _userManager.Users.ToListAsync();
+                var userDtos = _mapper.Map<IEnumerable<UserDto>>(users);
+
+                foreach (var userDto in userDtos)
+                {
+                    var user = await _userManager.FindByIdAsync(userDto.Id!);
+                    var roles = await _userManager.GetRolesAsync(user!);
+                    userDto.Roles = roles;
+                }
+                return Ok(new ApiResponse<IEnumerable<UserDto>>
+                {
+                    Success = true,
+                    Message = "Category retrieved successfully.",
+                    Data = userDtos
+                });
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(500, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn.");
+            }
         }
     }
 }

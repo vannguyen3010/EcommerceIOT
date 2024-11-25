@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35514.174 d17.12
+VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.API", "Ecommerce.API\Ecommerce.API.csproj", "{F2F8A71D-02D4-4CFB-8089-335C0E1D7147}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{6BB006EE-F955-469D-BB07-1249A6DEE35F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerService", "LoggerService\LoggerService.csproj", "{3C6C2D1E-79ED-42D7-BB32-030043DA5B55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceIOT.Client", "EcommerceIOT.Client\EcommerceIOT.Client.csproj", "{2DB827F8-B415-4907-85F7-8D09BEA168EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{3C6C2D1E-79ED-42D7-BB32-030043DA5B55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C6C2D1E-79ED-42D7-BB32-030043DA5B55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C6C2D1E-79ED-42D7-BB32-030043DA5B55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DB827F8-B415-4907-85F7-8D09BEA168EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DB827F8-B415-4907-85F7-8D09BEA168EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DB827F8-B415-4907-85F7-8D09BEA168EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DB827F8-B415-4907-85F7-8D09BEA168EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
