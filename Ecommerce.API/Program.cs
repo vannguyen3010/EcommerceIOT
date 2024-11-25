@@ -2,6 +2,7 @@
 using Ecommerce.API.Extensions;
 using Ecommerce.API.JwtFeatures;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.FileProviders;
 using NLog;
 
 namespace Ecommerce.API
@@ -33,6 +34,7 @@ namespace Ecommerce.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddHttpContextAccessor();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -48,6 +50,12 @@ namespace Ecommerce.API
 
             app.UseAuthentication();
 
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Img_Repository")),
+                RequestPath = "/Img_Repository"
+                // https://localhost:1234/Images
+            });
 
             app.MapControllers();
 
