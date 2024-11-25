@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTO.Response;
 using Shared.DTO.User;
+using Shared.Enum;
 
 namespace Ecommerce.API.Controllers
 {
@@ -72,6 +73,40 @@ namespace Ecommerce.API.Controllers
             await _userManager.AddToRoleAsync(user, "User");
 
             return StatusCode(201);
+        }
+
+        [HttpPost]
+        [Route("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        {
+
+            if (string.IsNullOrEmpty(loginDto.Email) || string.IsNullOrEmpty(loginDto.Password))
+            {
+                return BadRequest("Kiểm tra Email và Mật khẩu!");
+
+            }
+
+            var user = await _userManager.FindByEmailAsync(loginDto.Email!);
+            if (user == null)
+            {
+                return BadRequest("Kiểm tra Email và Mật khẩu!");
+            }
+
+            if (!await _userManager.CheckPasswordAsync(user, loginDto.Password!))
+            {
+                return BadRequest("Kiểm tra Email và Mật khẩu!");
+            }
+
+            if (user.EmailConfirmed == false)
+            {
+                return BadRequest("Kiểm tra Email và Mật khẩu!");
+            }
+
+            var token = await _jwtHandler.GenerateToken(user);
+
+            await _userManager.ResetAccessFailedCountAsync(user);
+
+            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
         }
     }
 }
