@@ -1,0 +1,148 @@
+﻿.cursor{
+    cursor: pointer;
+}
+
+.custom_pagination_ul {
+    gap: 10px;
+}
+.custom_left {
+    border-radius: 5px;
+    overflow: hidden;
+}
+.custom_left a{
+    border: unset;
+}
+.custom_left_item {
+    border-radius: 9px;
+    overflow: hidden;
+}
+
+.custom_left_item:hover a{
+    border-color: #0da487;
+    color: #fff;
+}
+
+/* Tạo hình dáng của nút gạt */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    margin-left: 10px; /* Khoảng cách giữa chữ và nút gạt */
+    vertical-align: middle;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;    
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+/* Hiệu ứng khi checkbox được chọn */
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+.table_row_disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+.no_wrap_1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    white-space: normal !important;
+}
+.loading {
+    border-bottom: 4px solid rgba(0, 0, 0, .2);
+    border-left: 4px solid rgba(0, 0, 0, .2);
+    border-right: 4px solid rgba(0, 0, 0, .2);
+    border-top: 4px solid rgba(0, 0, 0, .5);
+    border-radius: 100%;
+    height: 32px;
+    width: 32px;
+    animation: spin .6s infinite linear;
+    text-indent: 999em;
+    margin: 3em auto;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(359deg);
+    }
+}
+.search_input {
+    font-family: 'Public Sans' !important;
+    border: none;
+    outline: none;
+    padding: 5px;
+    width: 200px;
+}
+
+.sort_categories {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.search_button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    padding: 0 10px;
+}
+.search_box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 5px;
+}
+.buttonload {
+    background-color: #039184;
+    border: none;
+    color: white;
+    padding: 9px 23px;
+    font-size: 16px;
+    margin: 25px;
+    border-radius: 30px;
+}
+
+    .buttonload i {
+        margin-left: -12px;
+        margin-right: 8px;
+    }
