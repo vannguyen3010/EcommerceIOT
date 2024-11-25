@@ -1,8 +1,6 @@
-using EcommerceIOT.Client.Components;
-using EcommerceIOT.Client.Services;
-using Microsoft.Extensions.Options;
+using EcommerIOT.Admin.Components;
 
-namespace EcommerceIOT.Client
+namespace EcommerIOT.Admin
 {
     public class Program
     {
@@ -16,7 +14,6 @@ namespace EcommerceIOT.Client
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7013/") });
 
-            builder.Services.AddScoped<AccountServices>();
             builder.Services.AddScoped<ContactServices>();
             var app = builder.Build();
 
