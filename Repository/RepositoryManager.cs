@@ -6,6 +6,7 @@ namespace Repository
     {
         private readonly RepositoryContext _repoContext;
         private IContactRepository _contact;
+        private IProfileRepository _ProfileInfo;
         public RepositoryManager(RepositoryContext repositoryContext)
         {
             _repoContext = repositoryContext;
@@ -23,6 +24,20 @@ namespace Repository
                 return _contact;
             }
         }
+
+        public IProfileRepository Profile
+        {
+            get
+            {
+                if (_ProfileInfo == null)
+                {
+                    _ProfileInfo = new ProfileRepository(_repoContext);
+                }
+
+                return _ProfileInfo;
+            }
+        }
+
         public void SaveAsync() => _repoContext.SaveChanges();
     }
 }

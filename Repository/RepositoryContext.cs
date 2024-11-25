@@ -20,5 +20,6 @@ namespace Repository
         }
 
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<ProfileInfo> ProfileInfos { get; set; }
     }
 }

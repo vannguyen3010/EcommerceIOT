@@ -15,6 +15,7 @@ namespace EcommerceIOT.Admin
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7013/") });
 
             builder.Services.AddScoped<ContactServices>();
+            builder.Services.AddScoped<ProfileServices>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
