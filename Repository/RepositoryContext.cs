@@ -21,5 +21,7 @@ namespace Repository
 
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<ProfileInfo> ProfileInfos { get; set; }
+        public DbSet<CategoryNew> CategoryNews { get; set; }
+        public DbSet<New> News { get; set; }
     }
 }

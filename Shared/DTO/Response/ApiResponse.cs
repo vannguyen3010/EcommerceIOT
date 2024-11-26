@@ -1,4 +1,6 @@
-﻿using Shared.DTO.Contact;
+﻿using Shared.DTO.CategoryIntroduce;
+using Shared.DTO.Contact;
+using Shared.DTO.Introduce;
 
 namespace Shared.DTO.Response
 {
@@ -12,5 +14,22 @@ namespace Shared.DTO.Response
     {
         public int totalCount { get; set; }
         public IEnumerable<ContactDto> contacts { get; set; }
+    }
+    public class ApiProductResponse<T, U>
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public T Data { get; set; }
+        public U Data2nd { get; set; }
+    }
+    public class IntroduceCategoryResponse
+    {
+        public int TotalCount { get; set; }
+        public IEnumerable<CategoryIntroduceDto> categories { get; set; }
+    }
+    public class IntroduceResponse
+    {
+        public int TotalCount { get; set; }
+        public IEnumerable<IntroduceDto> Introduces { get; set; }
     }
 }
