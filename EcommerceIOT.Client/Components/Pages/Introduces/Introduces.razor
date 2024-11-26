@@ -1,0 +1,219 @@
+﻿@page "/tin-tuc"
+@rendermode InteractiveServer
+<div class="hero-section hero-background style-02">
+    <h1 class="page-title" style="color:#000;">Tin túc</h1>
+    <nav class="biolife-nav">
+        <ul>
+            <li class="nav-item"><a onclick="window.location.href='/'" class="permal-link" style="color:#000;">Trang chủ</a></li>
+            <li class="nav-item"><span class="current-page" style="color:#000;">Tin tức</span></li>
+        </ul>
+    </nav>
+</div>
+<div class="page-contain blog-page">
+    <div class="container">
+        <!-- Main content -->
+        <div id="main-content" class="main-content">
+
+            <div class="row">
+
+                <!--articles block-->
+                <ul class="posts-list main-post-list">
+                    @if (introduces != null && introduces.Any())
+                    {
+                        @foreach (var item in introduces)
+                        {
+                            <li class="post-elem col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="post-item effect-04 style-bottom-info">
+                                    <div class="thumbnail">
+                                        <a onclick="window.location.href='/tin-tuc/@item.NameSlug/@item.id';" class="link-to-post"><img src="@(string.IsNullOrEmpty(item.FilePath) ? "/Img_Dev/banner.png" : item.FilePath)" width="370" height="270" alt=""></a>
+                                    </div>
+                                    <div class="post-content">
+                                        <h4 class="post-name"><a href="#" class="linktopost">@item.Name</a></h4>
+
+                                        <p class="excerpt">@item.CreatedAt.ToString("dd-MM-yyyy")</p>
+                                        <p class="excerpt">@item.Description</p>
+                                        <div class="group-buttons">
+                                            <a onclick="window.location.href='/tin-tuc/@item.NameSlug/@item.id';" class="btn readmore">Xem thêm</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    }
+                   
+                </ul>
+
+            </div>
+
+            <!--Panigation Block-->
+            <div class="biolife-panigations-block ">
+
+                @if (totalPages > 1)
+                {
+                    <ul class="panigation-contain">
+                        <li>
+                            <a href="javascript:void(0)" class="link-page prev @(currentPage == 1 ? "disabled" : "")"
+                               @onclick="PreviousPage" aria-label="Previous" tabindex="-1" aria-disabled="@(currentPage == 1)">
+                                <i class="fa fa-angle-left" aria-hidden="true"></i>
+                            </a>
+                        </li>
+
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            var pageNumber = i;
+                            <li>
+                                @if (pageNumber == currentPage)
+                                {
+                                    <span class="current-page">@pageNumber</span>
+                                }
+                                else
+                                {
+                                    <a href="javascript:void(0)" class="link-page" @onclick="(() => ChangePage(pageNumber))">@pageNumber</a>
+                                }
+                            </li>
+                        }
+
+                        <li>
+                            <a href="javascript:void(0)" class="link-page next @(currentPage == totalPages ? "disabled" : "")"
+                               @onclick="NextPage" aria-label="Next">
+                                <i class="fa fa-angle-right" aria-hidden="true"></i>
+                            </a>
+                        </li>
+                    </ul>
+                }
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@code{
+    private IEnumerable<IntroduceDto> introduces;
+
+    private string? keyword = null;
+    private Guid? categoryId = null;
+    private int currentPage = 1;
+    private int pageSize = 6;
+    private int totalPages;
+    private int totalCount;
+    private int? type;
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("c", out var cId))
+        {
+            categoryId = new Guid(cId!);
+
+            var categoryResponse = await _introducesServices.GetIntroduceByCategoryId(categoryId.Value);
+
+            if (categoryResponse != null && categoryResponse.Success)
+            {
+                var category = categoryResponse.Data;
+
+            }
+        }
+
+        if (query.TryGetValue("pageNumber", out var page))
+        {
+            int.TryParse(page, out currentPage);
+        }
+
+        if (query.TryGetValue("type", out var typeValue))
+        {
+            int.TryParse(typeValue, out var parsedType);
+            type = parsedType;
+        }
+
+        await LoadListIntroduces();
+    }
+
+    private async Task LoadListIntroduces()
+    {
+        var response = await _introducesServices.GetListIntroduceAsync(currentPage, pageSize, categoryId, keyword, type);
+
+        if (response != null && response.Success)
+        {
+            introduces = response.Data.Introduces.Where(x => x.Status == true).ToList();
+            totalCount = response.Data.TotalCount;
+            totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+        }
+        else
+        {
+            introduces = new List<IntroduceDto>();
+        }
+
+    }
+
+    private async Task ChangePage(int page)
+    {
+        // Chỉ cập nhật nếu page khác currentPage
+        if (page != currentPage)
+        {
+            currentPage = page;
+            await UpdateUrlAndLoadProducts();
+        }
+    }
+
+    private async Task PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            await UpdateUrlAndLoadProducts();
+        }
+    }
+
+    private async Task NextPage()
+    {
+        if (currentPage < totalPages)
+        {
+            currentPage++;
+            await UpdateUrlAndLoadProducts();
+        }
+    }
+
+    private async Task HandleSearch()
+    {
+        currentPage = 1;
+        await UpdateUrlAndLoadProducts();
+
+    }
+
+    private async Task OnPageSizeChanged(ChangeEventArgs e)
+    {
+        pageSize = int.Parse(e.Value.ToString());
+
+        currentPage = 1;
+        await UpdateUrlAndLoadProducts();
+    }
+
+    private async Task UpdateUrlAndLoadProducts()
+    {
+        // Tạo URL mới với thông tin trang hiện tại, kích thước trang, và giá lọc
+        var queryParameters = new Dictionary<string, string>
+            {
+                ["pageNumber"] = currentPage.ToString(),
+                ["pageSize"] = pageSize.ToString()
+            };
+
+        if (!string.IsNullOrEmpty(keyword))
+        {
+            queryParameters["keyword"] = keyword;
+        }
+
+        if (type.HasValue)
+        {
+            queryParameters["type"] = type.Value.ToString();
+        }
+
+        // Tạo URL query string
+        var newUrl = QueryHelpers.AddQueryString("tin-tuc", queryParameters!);
+        NavigationManager.NavigateTo(newUrl, forceLoad: false);
+
+        // Tải lại danh sách sản phẩm
+        await LoadListIntroduces();
+    }
+}

@@ -229,5 +229,42 @@ namespace Ecommerce.API.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+
+        [HttpGet]
+        [Route("GetAllCategory")]
+        public async Task<IActionResult> GetAllCategory()
+        {
+            try
+            {
+                var categories = await _repository.CateIntroduce.GetAllCategoryIntroduceAsync(trackChanges: false);
+                if (categories == null)
+                {
+                    _logger.LogError("Không có danh mục nào!");
+                    return NotFound(new ApiResponse<Object>
+                    {
+                        Success = false,
+                        Message = $"Không có danh mục nào!",
+                        Data = null
+                    });
+                }
+
+
+                var categoryDtos = _mapper.Map<IEnumerable<CategoryIntroduceDto>>(categories);
+
+                return Ok(new ApiResponse<IEnumerable<CategoryIntroduceDto>>
+                {
+                    Success = true,
+                    Message = "Category retrieved successfully.",
+                    Data = categoryDtos
+                });
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError($"Something went wrong inside CreateCategory action: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
     }
 }

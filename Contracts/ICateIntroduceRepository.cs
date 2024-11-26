@@ -10,6 +10,7 @@ namespace Contracts
         void DeleteCategory(CategoryNew categoryIntroduce);
         Task<CategoryNew> GetCategoryIntroduceByNameAsync(string name);
         Task<(IEnumerable<CategoryNew> CategoryIntroduce, int Total)> GetAllCategoryIntroducePagitionAsync(int pageNumber, int pageSize, string? keyword = null);
+        Task<IEnumerable<CategoryNew>> GetAllCategoryIntroduceAsync(bool trackChanges);
         Task SaveAsync();
     }
 }
