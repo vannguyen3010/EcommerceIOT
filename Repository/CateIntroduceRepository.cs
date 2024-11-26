@@ -74,5 +74,13 @@ namespace Repository
 
             return (categories, totalCount);
         }
+
+        public async Task<IEnumerable<CategoryNew>> GetAllCategoryIntroduceAsync(bool trackChanges)
+        {
+            return await _dbContext.CategoryNews
+                    .Include(x => x.New)
+                    .OrderBy(x => x.Id)
+                    .ToListAsync();
+        }
     }
 }
