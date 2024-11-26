@@ -1,0 +1,177 @@
+﻿@page "/cap-nhat-bai-viet/{id:guid}"
+@using EcommerceIOT.Admin.Extention
+
+
+@rendermode InteractiveServer
+
+@if (introduces != null)
+{
+    <div class="page-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-sm-8 m-auto">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-header-2">
+                                        <h5>Cập nhật bài viết</h5>
+                                    </div>
+
+                                    <form class="theme-form theme-form-2 mega-form">
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="form-label-title col-sm-3 mb-0">Tên bài viết</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" type="text" @bind="introduces.Name" required />
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="col-sm-3 col-form-label form-label-title">Danh mục bài viết</label>
+                                            <div class="col-sm-9">
+                                                <select class="js-example-basic-single w-100" name="state" @bind="introduces.CategoryId">
+                                                    @if (cateIntroduces != null && cateIntroduces.Any())
+                                                    {
+                                                        @foreach (var item in cateIntroduces)
+                                                        {
+                                                            <option value="@item.Id" selected="@(introduces.CategoryId == item.Id ? "selected" : null)">
+                                                                @item.Name
+                                                            </option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="col-sm-3 col-form-label form-label-title">Nổi bật</label>
+                                            <div class="col-sm-9">
+                                                <label class="switch">
+                                                    <input type="checkbox" @bind="introduces.IsHot" />
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row">
+                                            <label class="form-label-title col-sm-3 mb-0">Mô tả</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" rows="3" @bind="introduces.Description"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="col-sm-3 col-form-label form-label-title">Ảnh</label>
+                                            <div class="table-image" style="width: 200px;">
+                                                <img src="@(string.IsNullOrEmpty(introduces.FilePath) ? "/Img_Dev/banner.png" : introduces.FilePath)" class="img-fluid" alt="image" onerror="this.onerror=null;this.src='/Img_Dev/banner.png';" />
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="col-3 col-form-label form-label-title"></label>
+                                            <InputFile class="table-image col-6" OnChange="OnFileSelected" accept=".jpg,.jpeg,.png" />
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                @if (ShowLoadingButton)
+                                {
+                                    <ButtonLoad></ButtonLoad>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-primary" @onclick="UpdateIntroduce">Cập nhật</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code{
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    [Parameter]
+    public Guid id { get; set; }
+
+    private IEnumerable<CategoryIntroduceDto> cateIntroduces;
+    private IntroduceDto introduces;
+    private IBrowserFile? selectedFile;
+
+    public bool ShowLoadingButton { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // await CheckUserAuthentication();
+        await GetIntroduceById();
+        await LoadListCategoriesIntroduces();
+    }
+
+    private async Task CheckUserAuthentication()
+    {
+        var user = (await AuthenticationState!).User;
+        bool isUserAuthenticated = user.Identity!.IsAuthenticated;
+        if (!isUserAuthenticated)
+            NavigationManager.NavigateTo("/account/login");
+    }
+
+    private async Task GetIntroduceById()
+    {
+        var response = await _introduceServices.GetIntroduceByIdAsync(id);
+
+        if (response != null && response.Success)
+        {
+            introduces = response.Data;
+        }
+    }
+    private async Task GetCategoryByid(Guid id)
+    {
+        NavigationManager.NavigateTo($"/cap-nhat-bai-viet/{id}", forceLoad: true);
+    }
+
+    private async Task LoadListCategoriesIntroduces()
+    {
+        var response = await _categoryIntroduceServices.GetAllCategoryPaginationAsync(1, 10, null);
+
+        if (response != null && response.Success)
+        {
+            cateIntroduces = response.Data.categories;
+        }
+    }
+
+    private async Task UpdateIntroduce()
+    {
+        ShowLoadingButton = true;
+
+        IFormFile formFile = selectedFile != null ? new CustomFormFile(selectedFile) : null;
+
+        var updateIntroduceDto = new UpdateIntroduceDto
+            {
+                Name = introduces.Name,
+                Description = introduces.Description,
+                CategoryId = introduces.CategoryId,
+                IsHot = introduces.IsHot,
+                File = formFile
+            };
+        var success = await _introduceServices.UpdateIntroduceAsync(id, updateIntroduceDto, selectedFile);
+        if (success)
+        {
+            NavigationManager.NavigateTo("/quan-ly-bai-viet", forceLoad: true);
+        }
+
+        await Task.Delay(1000);
+        ShowLoadingButton = false;
+    }
+
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+}

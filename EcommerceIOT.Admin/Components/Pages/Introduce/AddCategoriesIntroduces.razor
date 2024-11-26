@@ -1,0 +1,61 @@
+﻿@page "/add-categories-introduces"
+@using global::Shared.DTO.CategoryIntroduce
+
+@rendermode InteractiveServer
+
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-sm-8 m-auto">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-header-2">
+                                    <h5>Tạo mới danh mục</h5>
+                                </div>
+                                <form class="theme-form theme-form-2 mega-form">
+                                    <div class="mb-4 row align-items-center">
+                                        <label class="form-label-title col-sm-3 mb-0">Tên danh mục</label>
+                                        <div class="col-sm-9">
+                                            <input class="form-control" type="text" @bind="newCategories.Name"
+                                                   placeholder="Nhập tên danh mục">
+                                        </div>
+                                    </div>
+                                    <div class="mb-4 row align-items-center">
+                                        <div class="col-sm-9">
+                                            <div class="dropdown icon-dropdown" style="float: right">
+                                                <button class="btn btn-success buttonload" type="submit" @onclick="SubmitCategory" style="background: #50852d !important;">
+                                                    Tạo mới
+                                                </button>
+                                             
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+
+    private CreateCategoryIntroDto newCategories = new CreateCategoryIntroDto();
+    public bool ShowLoadingButton { get; set; } = false;
+
+
+    private async Task SubmitCategory()
+    {
+
+        var result = await _categoryIntroduceServices.CreateCategoriesAsync(newCategories);
+        if (result)
+        {
+            newCategories.Name = "";
+        }
+    }
+}

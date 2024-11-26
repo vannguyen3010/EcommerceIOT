@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <Folder Include="Img_Repository\img-Profile\" />
+    <Folder Include="Img_Repository\Introduce\" />
   </ItemGroup>
 
 </Project>

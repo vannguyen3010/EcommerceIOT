@@ -16,6 +16,8 @@ namespace EcommerceIOT.Admin
 
             builder.Services.AddScoped<ContactServices>();
             builder.Services.AddScoped<ProfileServices>();
+            builder.Services.AddScoped<CategoryIntroduceServices>();
+            builder.Services.AddScoped<IntroduceServices>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
