@@ -23,5 +23,7 @@ namespace Repository
         public DbSet<ProfileInfo> ProfileInfos { get; set; }
         public DbSet<CategoryNew> CategoryNews { get; set; }
         public DbSet<New> News { get; set; }
+        public DbSet<CateProduct> CateProducts { get; set; }
+        public DbSet<Product> Products { get; set; }
     }
 }

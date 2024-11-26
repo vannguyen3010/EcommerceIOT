@@ -20,4 +20,5 @@ namespace Shared.DTO.Introduce
         public IFormFile? File { get; set; }
         public bool IsHot { get; set; }
     }
+   
 }
