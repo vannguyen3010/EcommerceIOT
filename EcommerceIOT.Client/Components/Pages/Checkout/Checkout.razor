@@ -1,0 +1,164 @@
+﻿@page "/thanh-toan"
+@rendermode InteractiveServer
+<div class="page-contain checkout">
+
+    <!-- Main content -->
+    <div id="main-content" class="main-content">
+        <div class="container sm-margin-top-37px">
+            <div class="row">
+                <div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
+                    <div class="checkout-progress-wrap">
+                        <ul class="steps">
+                            <li class="step 1st">
+                                <div class="checkout-act active">
+                                    <h3 class="title-box"><span class="number">1</span>Khách hàng</h3>
+                                    <div class="box-content">
+                                        <div class="login-on-checkout">
+                                            <form action="#" name="frm-login" method="post">
+                                                <p class="form-row">
+                                                    <label for="input_email">Tên</label>
+                                                    <input type="text" placeholder="tên" @bind="orderModel.UserName" style="width: 100%;">
+                                                </p>
+                                                <p class="form-row">
+                                                    <label for="input_email">Email</label>
+                                                    <input type="text" @bind="orderModel.Email" placeholder="Your email" style="width: 100%;">
+                                                </p>
+                                                <p class="form-row">
+                                                    <label for="input_email">Số điện thoại</label>
+                                                    <input type="text" @bind="orderModel.PhoneNumber" placeholder="Số điện thoại" style="width: 100%;">
+                                                </p>
+                                                <p class="form-row">
+                                                    <label for="input_email">Địa chỉ nhận hàng</label>
+                                                    <input type="text" @bind="orderModel.Address" placeholder="Địa chỉ nhận hàng" style="width: 100%;">
+                                                </p>
+                                                <p class="form-row">
+                                                    <label for="input_email">Ghi chú</label>
+                                                    <textarea @bind="orderModel.Note" type="text" placeholder="Ghi chú" style="width: 100%;" />
+                                                </p>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!--Order Summary-->
+                <div class="col-lg-5 col-md-5 col-sm-6 col-xs-12 sm-padding-top-48px sm-margin-bottom-0 xs-margin-bottom-15px">
+                    <div class="order-summary sm-margin-bottom-80px">
+                        <div class="title-block">
+                            <h3 class="title">Giỏ hàng</h3>
+                        </div>
+                        <div class="cart-list-box short-type">
+                            <ul class="cart-list">
+                                @if (carts != null && carts.Any())
+                                {
+                                    foreach (var item in carts)
+                                    {
+                                        <li class="cart-elem">
+                                            <div class="cart-item">
+                                                <div class="product-thumb">
+                                                    <a class="prd-thumb" href="#">
+                                                        <figure><img src="@(string.IsNullOrEmpty(item.ImageFilePath) ? "/Img_Dev/banner.png" : item.ImageFilePath)" width="113" height="113" alt="shop-cart"></figure>
+                                                    </a>
+                                                </div>
+                                                <div class="info">
+                                                    <span class="txt-quantity">x @item.Quantity</span>
+                                                    <a href="#" class="pr-name">@item.Name</a>
+                                                </div>
+                                                <div class="price price-contain">
+                                                    <ins><span class="price-amount"><span class="currencySymbol"></span>@((item.Price * item.Quantity - item.Discount * item.Quantity).ToString("N0"))</span></ins>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
+                                }
+                               
+                            </ul>
+                            <ul class="subtotal">
+                                <li>
+                                    <div class="subtotal-line">
+                                        <b class="stt-name">Tổng tiền:</b>
+                                        <span class="stt-price">@totalPrice.ToString("N0")</span>
+                                    </div>
+                                </li>
+                               
+                            </ul>
+                            <button @onclick="HandleCreateOrder" name="btn-sbmt" class="btn" style="background: #444fac;color: #fff;">Đặt hàng</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    private IEnumerable<CartItemDto> carts = new List<CartItemDto>();
+    private CreateOrderDto orderModel = new CreateOrderDto();
+    private bool isRendered = false;
+    private decimal totalPrice;
+    private string message;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !isRendered)
+        {
+            isRendered = false; // Đảm bảo LoadListCarts chỉ gọi một lần khi render
+            await LoadListCarts();
+        }
+    }
+
+    private async Task LoadListCarts()
+    {
+        var userId = await localStorage.GetItemAsync<string>("userId");
+        if (string.IsNullOrEmpty(userId))
+        {
+            message = "Vui lòng đăng nhập để bình luận.";
+            return;
+        }
+
+        var response = await _cartServices.GetCartAsync(userId);
+        if (response != null && response.Success)
+        {
+            carts = response.Data.Items;
+            totalPrice = response.Data.TotalPrice;
+        }
+        else
+        {
+            carts = new List<CartItemDto>();
+            message = response?.Message ?? "Lỗi khi lấy giỏ hàng.";
+        }
+        StateHasChanged();
+    }
+
+    private async Task HandleCreateOrder()
+    {
+        var userId = await localStorage.GetItemAsync<string>("userId");
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            message = "Vui lòng đăng nhập để đặt hàng.";
+            return;
+        }
+        orderModel.UserId = userId;
+
+        var orderResult = await _orderServices.CreateOrderAsync(orderModel);
+
+        if (orderResult.Success && orderResult.Data != null)
+        {
+            message = "Đặt hàng thành công!";
+
+            var orderId = orderResult.Data.Id;
+
+            NavigationManager.NavigateTo($"/order-success/{orderId}", forceLoad: true);
+        }
+        else
+        {
+            message = "Đặt hàng thất bại";
+        }
+
+    }
+}

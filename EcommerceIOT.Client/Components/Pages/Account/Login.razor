@@ -1,4 +1,5 @@
 ﻿@page "/dang-nhap"
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @rendermode InteractiveServer
 <!--Navigation section-->
@@ -18,20 +19,28 @@
             <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <div class="signin-container">
-                        <form action="#" name="frm-login" method="post">
+                        <EditForm Model="User" OnValidSubmit="HandleLogin" name="frm-login" method="post" FormName="form-login">
+                            <DataAnnotationsValidator />
                             <p class="form-row">
                                 <label for="fid-name">Email Address:<span class="requite">*</span></label>
-                                <input type="text" id="fid-name" name="name" value="" class="txt-input">
+                                <InputText @bind-Value="User.Email" type="text" id="fid-name" name="name" class="txt-input" />
                             </p>
                             <p class="form-row">
                                 <label for="fid-pass">Password:<span class="requite">*</span></label>
-                                <input type="email" id="fid-pass" name="email" value="" class="txt-input">
+                                <InputText @bind-Value="User.Password" type="password" id="fid-pass" name="password" class="txt-input" />
                             </p>
                             <p class="form-row wrap-btn">
                                 <button class="btn btn-submit btn-bold" type="submit">Đăng nhập</button>
                                 <a href="#" class="link-to-help">Forgot your password</a>
+
+                                @if (!string.IsNullOrEmpty(loginError))
+                                {
+                                    <div class="alert alert-danger">
+                                        @loginError
+                                    </div>
+                                }
                             </p>
-                        </form>
+                        </EditForm>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -60,32 +69,40 @@
 </div>
 
 @code{
-    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
 
     public LoginDto User = new();
+    private string loginError;
+    private string errorMessage = string.Empty;
+    private string returnUrl = string.Empty;
 
     protected async override Task OnInitializedAsync()
     {
         // await CheckUserAuthentication();
     }
 
-    public async Task HandleLogin()
+    private async Task HandleLogin()
     {
+        var result = await _accountServices.Login(User);
 
-        var result = await _accountServices.LoginAsync(User);
+        if (result.IsAuthSuccessful)
+        {
+            errorMessage = string.Empty;
 
-        // if (result.IsAuthSuccessful)
-        // {
-        //     var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+            // AuthState.IsLoggedIn = true;
 
-        //     await customAuthStateProvider.UpdateAuthenticationState(new AuthResponseDto
-        //     {
-        //         Token = result.Token,
-        //         IsAuthSuccessful = result.IsAuthSuccessful,
-        //     });
+            // Lưu token vào LocalStorage
+            await localStorage.SetItemAsync("authToken", result.Token);
+            ((CustomAuthStateProvider)AuthenticationStateProvider).NotifyUserAuthentication(result.Token);
+            NavigationManager.NavigateTo("/");
 
-        //     NavigationManager.NavigateTo("/", forceLoad: true);
-        // }
+            // StateHasChanged();
 
+        }
+        else
+        {
+            loginError = "Đăng nhập không thành công. Vui lòng kiểm tra thông tin đăng nhập của bạn";
+            return;
+        }
     }
+
 }

@@ -1,5 +1,6 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using Blazored.LocalStorage
 @using EcommerceIOT.Client.Services
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
@@ -10,6 +11,8 @@
 @using EcommerceIOT.Client
 @using EcommerceIOT.Client.Components
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.WebUtilities
+@using EcommerceIOT.Client.Helpers
 
 @using EcommerceIOT.Client.Components.Shared
 
@@ -20,6 +23,8 @@
 @inject ProfileServices _profileServices
 @inject IntroducesServices _introducesServices
 @inject ProductServices _productServices
+@inject CartServices _cartServices
+@inject OrderServices _orderServices
 
 @using global::Shared.DTO.User
 @using global::Shared.DTO.Response
@@ -28,5 +33,9 @@
 @using global::Shared.DTO.CategoryIntroduce
 @using global::Shared.DTO.Profile
 @using global::Shared.DTO.Product
+@using global::Shared.DTO.Order
 
-@using Microsoft.AspNetCore.WebUtilities
+@using global::Shared.DTO.Cart
+
+@inject ILocalStorageService localStorage
+@inject IJSRuntime JSRuntime

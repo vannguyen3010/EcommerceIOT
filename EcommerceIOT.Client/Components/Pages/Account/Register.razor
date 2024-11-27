@@ -1,5 +1,5 @@
 ﻿@page "/dang-ky"
-
+@rendermode InteractiveServer
 <!--Navigation section-->
 <div class="container">
     <nav class="biolife-nav">
@@ -21,19 +21,29 @@
                 <!--Form Sign In-->
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <div class="signin-container">
-                        <form action="#" name="frm-login" method="post">
+                        <EditForm Model="registerDto" OnValidSubmit="HandleRegister" id="form-register" FormName="form-register">
+                            <DataAnnotationsValidator />
                             <p class="form-row">
-                                <label for="fid-name">Email Address:<span class="requite">*</span></label>
-                                <input type="text" id="fid-name" name="name" value="" class="txt-input">
+                                <label>Họ và tên:<span class="requite">*</span></label>
+                                <InputText type="text" @bind-Value="registerDto.UserName" class="txt-input" />
                             </p>
                             <p class="form-row">
-                                <label for="fid-pass">Password:<span class="requite">*</span></label>
-                                <input type="email" id="fid-pass" name="email" value="" class="txt-input">
+                                <label>Email Address:<span class="requite">*</span></label>
+                                <InputText type="text" name="name" @bind-Value="registerDto.Email" class="txt-input" />
+                            </p>
+
+                            <p class="form-row">
+                                <label>Mật khẩu:<span class="requite">*</span></label>
+                                <InputText type="password" @bind-Value="registerDto.Password" class="txt-input" />
+                            </p>
+                            <p class="form-row">
+                                <label>Xác nhận mật khẩu *:<span class="requite">*</span></label>
+                                <InputText type="password" @bind-Value="registerDto.ConfirmPassword" class="txt-input" />
                             </p>
                             <p class="form-row wrap-btn">
                                 <button class="btn btn-submit btn-bold" type="submit">Đăng ký</button>
                             </p>
-                        </form>
+                        </EditForm>
                     </div>
                 </div>
 
@@ -44,3 +54,25 @@
     </div>
 
 </div>
+
+@code {
+    private RegisterDto registerDto = new RegisterDto();
+    private string? _errorMessage;
+
+    private async Task HandleRegister()
+    {
+        _errorMessage = null; // Reset thông báo lỗi
+        var response = await _accountServices.RegisterUserAsync(registerDto);
+        if (response.IsAuthSuccessful)
+        {
+            // await localStorage.SetItemAsync("UserEmail", registerDto.Email);
+            // Chuyển hướng đến trang đăng nhập
+            await Task.Delay(1000);
+            NavigationManager.NavigateTo("/dang-nhap", forceLoad: true);
+        }
+        else
+        {
+            _errorMessage = "Đã xảy ra lỗi trong quá trình đăng ký.";
+        }
+    }
+}

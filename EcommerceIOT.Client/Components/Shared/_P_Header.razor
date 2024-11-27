@@ -1,4 +1,4 @@
-﻿
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @if (profile != null)
 {
@@ -32,7 +32,15 @@
 
                     </ul>
                     <ul class="horizontal-menu">
-                        <li><a href="/dang-nhap" class="login-link"><i class="biolife-icon icon-login"></i>Đăng nhập</a></li>
+
+                        @if (isLoggedIn)
+                        {
+                            <li><a href="#" @onclick="Logout" class="login-link"><i class="biolife-icon icon-login"></i>Đăng xuất</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="/dang-nhap" class="login-link"><i class="biolife-icon icon-login"></i>Đăng nhập</a></li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -183,14 +191,27 @@
     private ProfileInfoDto profile;
     private IEnumerable<CategoryIntroduceDto> cateIntroduces;
     private IEnumerable<CateProductDto> cateProducts;
+    private bool isLoggedIn;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var authToken = await localStorage.GetItemAsStringAsync("authToken");
+
+            isLoggedIn = !string.IsNullOrEmpty(authToken);
+
+            StateHasChanged();
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         await GetprofileById();
         cateIntroduces = await _introducesServices.GetAllCategoryIntroduces();
         cateProducts = await _productServices.GetAllCategoryProducts();
-    }
 
+    }
 
     private async Task GetprofileById()
     {
@@ -200,5 +221,16 @@
         {
             profile = response.Data;
         }
+    }
+    private async Task Logout()
+    {
+        // Xóa token khỏi LocalStorage và cập nhật lại trạng thái đăng nhập
+        await localStorage.RemoveItemAsync("authToken");
+
+        // Cập nhật lại trạng thái đăng nhập
+        ((CustomAuthStateProvider)AuthenticationStateProvider).NotifyUserLogout();
+
+        // Điều hướng về trang đăng nhập
+        NavigationManager.NavigateTo("/dang-nhap");
     }
 }
