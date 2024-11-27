@@ -38,4 +38,9 @@ namespace Shared.DTO.Response
         public int TotalCount { get; set; }
         public IEnumerable<CateProductDto> Categories { get; set; }
     }
+    public class ProductResponseDto
+    {
+        public int TotalCount { get; set; }
+        public IEnumerable<ProductDto> Products { get; set; }
+    }
 }

@@ -1,0 +1,188 @@
+﻿@page "/cap-nhat-san-pham/{id:guid}"
+
+@rendermode InteractiveServer
+
+@if (introduces != null)
+{
+    <div class="page-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-sm-8 m-auto">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-header-2">
+                                        <h5>Cập nhật sản phẩm</h5>
+                                    </div>
+
+                                    <form class="theme-form theme-form-2 mega-form">
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="form-label-title col-sm-3 mb-0">Tên sản phẩm</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" type="text" @bind="introduces.Name" required />
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="col-sm-3 col-form-label form-label-title">Danh mục sản phẩm</label>
+                                            <div class="col-sm-9">
+                                                <select class="js-example-basic-single w-100" name="state" @bind="introduces.CategoryId">
+                                                    @if (cateIntroduces != null && cateIntroduces.Any())
+                                                    {
+                                                        @foreach (var item in cateIntroduces)
+                                                        {
+                                                            <option value="@item.Id" selected="@(introduces.CategoryId == item.Id ? "selected" : null)">
+                                                                @item.Name
+                                                            </option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="col-sm-3 col-form-label form-label-title">Nổi bật</label>
+                                            <div class="col-sm-9">
+                                                <label class="switch">
+                                                    <input type="checkbox" @bind="introduces.IsHot" />
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row">
+                                            <label class="form-label-title col-sm-3 mb-0">Mô tả</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" rows="3" @bind="introduces.Description"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="form-label-title col-sm-3 mb-0">
+                                                Giá Gốc
+                                            </label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" type="text"
+                                                       placeholder="Nhập giá gốc" @bind="introduces.Price">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="form-label-title col-sm-3 mb-0">
+                                                Giảm giá
+                                            </label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" type="text"
+                                                       placeholder="Nhập giá giảm" @bind="introduces.Discount">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="col-sm-3 col-form-label form-label-title">
+                                                Đánh giá sao
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-sm-9">
+                                                <select class="js-example-basic-single w-100" name="state" @bind="introduces.Rating">
+                                                    <option selected>Chọn số sao</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="col-sm-3 col-form-label form-label-title">Ảnh</label>
+                                            <div class="table-image" style="width: 200px;">
+                                                <img src="@(string.IsNullOrEmpty(introduces.ImageFilePath) ? "/Img_Dev/banner.png" : introduces.ImageFilePath)" class="img-fluid" alt="image" onerror="this.onerror=null;this.src='/Img_Dev/banner.png';" />
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="col-3 col-form-label form-label-title"></label>
+                                            <InputFile class="table-image col-6" OnChange="OnFileSelected" accept=".jpg,.jpeg,.png" />
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" @onclick="UpdateIntroduce">Cập nhật</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code{
+
+    [Parameter]
+    public Guid id { get; set; }
+
+    private IEnumerable<CateProductDto> cateIntroduces;
+    private ProductDto introduces;
+    private IBrowserFile? selectedFile;
+
+    public bool ShowLoadingButton { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetIntroduceById();
+        await LoadListCategoriesIntroduces();
+    }
+
+    private async Task GetIntroduceById()
+    {
+        var response = await _productServices.GetProductByIdAsync(id);
+
+        if (response != null && response.Success)
+        {
+            introduces = response.Data;
+        }
+    }
+    private async Task GetCategoryByid(Guid id)
+    {
+        NavigationManager.NavigateTo($"/cap-nhat-san-pham/{id}", forceLoad: true);
+    }
+
+    private async Task LoadListCategoriesIntroduces()
+    {
+        cateIntroduces = await _categoriesProductServices.GetAllCategoryProducts();
+    }
+
+    private async Task UpdateIntroduce()
+    {
+
+        IFormFile formFile = selectedFile != null ? new CustomFormFile(selectedFile) : null;
+
+        var updateIntroduceDto = new UpdateProductDto
+            {
+                Name = introduces.Name,
+                Description = introduces.Description,
+                Detail = introduces.Detail,
+                Price = introduces.Price,
+                Discount = introduces.Discount,
+                Rating = introduces.Rating,
+                IsHot = introduces.IsHot,
+                File = formFile
+            };
+        var success = await _productServices.UpdateProductAsync(id, updateIntroduceDto, selectedFile);
+        if (success)
+        {
+            NavigationManager.NavigateTo("/quan-ly-san-pham", forceLoad: true);
+        }
+
+    }
+
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+}
