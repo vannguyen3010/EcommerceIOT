@@ -54,34 +54,15 @@
                                 <li class="menu-item menu-item-has-children has-child">
                                     <a href="/san-pham" class="menu-name" data-title="Products">Sản phẩm</a>
                                     <ul class="sub-menu">
-                                        <li class="menu-item"><a href="#">Omelettes</a></li>
-                                        <li class="menu-item"><a href="#">Breakfast Scrambles</a></li>
-                                        <li class="menu-item menu-item-has-children has-child">
-                                            <a href="#" class="menu-name" data-title="Máy đo nhiệt lượng">Máy đo nhiệt lượng</a>
-                                            <ul class="sub-menu">
-                                                <li class="menu-item"><a href="#">Classic Breakfast</a></li>
-                                                <li class="menu-item"><a href="#">Huevos Rancheros</a></li>
-                                                <li class="menu-item"><a href="#">Everything Egg Sandwich</a></li>
-                                                <li class="menu-item"><a href="#">Egg Sandwich</a></li>
-                                                <li class="menu-item"><a href="#">Vegan Burrito</a></li>
-                                                <li class="menu-item"><a href="#">Biscuits and Gravy</a></li>
-                                                <li class="menu-item"><a href="#">Bacon Avo Egg Sandwich</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="menu-item"><a href="#">Griddle</a></li>
-                                        <li class="menu-item menu-item-has-children has-child">
-                                            <a href="#" class="menu-name" data-title="Sides & Extras">Sides & Extras</a>
-                                            <ul class="sub-menu">
-                                                <li class="menu-item"><a href="#">Breakfast Burrito</a></li>
-                                                <li class="menu-item"><a href="#">Crab Cake Benedict</a></li>
-                                                <li class="menu-item"><a href="#">Corned Beef Hash</a></li>
-                                                <li class="menu-item"><a href="#">Steak & Eggs</a></li>
-                                                <li class="menu-item"><a href="#">Oatmeal</a></li>
-                                                <li class="menu-item"><a href="#">Fruit & Yogurt Parfait</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="menu-item"><a href="#">Biscuits</a></li>
-                                        <li class="menu-item"><a href="#">Seasonal Fruit Plate</a></li>
+                                        @if (cateProducts != null && cateProducts.Any())
+                                        {
+                                            @foreach (var item in cateProducts)
+                                            {
+                                                <li class="menu-item"><a onclick="window.location.href='/san-pham/?c=@item.Id'">@item.Name</a></li>
+                                            }
+                                        }
+                                      
+                                      
                                     </ul>
                                 </li>
                                 <li class="menu-item menu-item-has-children has-child">
@@ -337,12 +318,13 @@
     public Guid id { get; set; }
     private ProfileInfoDto profile;
     private IEnumerable<CategoryIntroduceDto> cateIntroduces;
-
+    private IEnumerable<CateProductDto> cateProducts;
 
     protected override async Task OnInitializedAsync()
     {
         await GetprofileById();
         cateIntroduces = await _introducesServices.GetAllCategoryIntroduces();
+        cateProducts = await _productServices.GetAllCategoryProducts();
     }
 
 
