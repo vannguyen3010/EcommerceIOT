@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Entities.Models;
+using Shared.DTO.Cart;
 using Shared.DTO.CategoryIntroduce;
 using Shared.DTO.Contact;
 using Shared.DTO.Introduce;
@@ -51,7 +52,14 @@ namespace Ecommerce.API.Mapping
 
             CreateMap<UpdateProductDto, Product>();
 
+            CreateMap<AddToCartDto, CartItem>();
 
+            CreateMap<CartItem, CartItemDto>()
+           .ForMember(dest => dest.FinalPrice, opt => opt.MapFrom(src => (src.Price * src.Quantity) - (src.Discount * src.Quantity)));
+
+            CreateMap<UpdateCartItemDto, CartItem>();
+
+            CreateMap<CartItemDto, CartItem>();
         }
     }
 }
