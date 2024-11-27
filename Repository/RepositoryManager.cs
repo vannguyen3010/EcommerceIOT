@@ -11,6 +11,7 @@ namespace Repository
         private IIntroduceRepository _introduceRepository;
         private ICateProductsRepository _cateProductsRepository;
         private IProductRepository _productRepository;
+        private ICartRepository _cartRepository;
         public RepositoryManager(RepositoryContext repositoryContext)
         {
             _repoContext = repositoryContext;
@@ -91,6 +92,19 @@ namespace Repository
                 }
 
                 return _productRepository;
+            }
+        }
+
+        public ICartRepository Cart
+        {
+            get
+            {
+                if (_cartRepository == null)
+                {
+                    _cartRepository = new CartRepository(_repoContext);
+                }
+
+                return _cartRepository;
             }
         }
 
