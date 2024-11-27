@@ -1,0 +1,139 @@
+﻿@using global::Shared.DTO.User
+@inject ProductServices _productServices
+@inject OrderServices _orderService
+@code {
+    private IEnumerable<ProductDto> products;
+    private IEnumerable<UserDto> users;
+    private IEnumerable<OrderDto> orders;
+
+    private int currentPage = 1;
+    private int pageSize = 10;
+
+    private int totalCount;
+    private int totalUser;
+    private decimal totalAmount = 0;
+    private decimal totalOrders = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadListProduct();
+        await LoadListUsers();
+        await LoadListOrder();
+    }
+
+    private async Task LoadListProduct()
+    {
+        var response = await _productServices.GetAllProductsPagination(currentPage, pageSize);
+        if (response != null && response.Success)
+        {
+            products = response.Data.Products;
+            totalCount = response.Data.TotalCount;
+        }
+    }
+    private async Task LoadListOrder()
+    {
+        var response = await _orderService.GetListOrderTypeAsync(0); // 0 để lấy tất cả đơn hàng
+        if (response.Success)
+        {
+            orders = response.Data;
+
+            totalOrders = response.Data.Count();
+
+            totalAmount = orders.Sum(order => order.TotalAmount);
+        }
+    }
+    private async Task LoadListUsers()
+    {
+        var response = await _orderService.GetAllUsers();
+        if (response != null && response.Success && response.Data != null)
+        {
+            users = response.Data;
+            totalUser = response.Data.Count(u => u.Roles.Contains("User"));
+        }
+    }
+
+}
+
+<div class="col-sm-6 col-xxl-3 col-lg-6">
+    <div class="main-tiles border-5 border-0  card-hover card o-hidden">
+        <div class="custome-1-bg b-r-4 card-body">
+            <div class="media align-items-center static-top-widget">
+                <div class="media-body p-0">
+                    <span class="m-0">
+                        Tổng doanh thu
+                    </span>
+                    <h4 class="mb-0 counter">
+                        @totalAmount.ToString("N0")
+                        <span class="currency-symbol text-danger">đ</span>
+                    </h4>
+                </div>
+                <div class="align-self-center text-center">
+                    <i class="ri-database-2-line"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-6 col-xxl-3 col-lg-6">
+    <div class="main-tiles border-5 card-hover border-0 card o-hidden">
+        <div class="custome-2-bg b-r-4 card-body">
+            <div class="media static-top-widget">
+                <div class="media-body p-0">
+                    <span class="m-0">
+                        Tổng số đơn đặt hàng
+                    </span>
+                    <h4 class="mb-0 counter">
+                        @totalOrders
+                    </h4>
+                </div>
+                <div class="align-self-center text-center">
+                    <i class="ri-shopping-bag-3-line"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-6 col-xxl-3 col-lg-6">
+    <div class="main-tiles border-5 card-hover border-0  card o-hidden">
+        <div class="custome-3-bg b-r-4 card-body">
+            <div class="media static-top-widget">
+                <div class="media-body p-0">
+                    <span class="m-0">
+                        Tổng số sản phẩm
+                    </span>
+                    <h4 class="mb-0 counter">
+                        @totalCount
+                        <a class="badge badge-light-secondary grow cursor" onclick="window.location.href='/them-san-pham'">
+                            Thêm sản phẩm
+                        </a>
+                    </h4>
+                </div>
+
+                <div class="align-self-center text-center">
+                    <i class="ri-chat-3-line"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-6 col-xxl-3 col-lg-6">
+    <div class="main-tiles border-5 card-hover border-0 card o-hidden">
+        <div class="custome-4-bg b-r-4 card-body">
+            <div class="media static-top-widget">
+                <div class="media-body p-0">
+                    <span class="m-0">Tổng số khách hàng</span>
+                    <h4 class="mb-0 counter">
+                        @totalUser
+                    </h4>
+                </div>
+
+                <div class="align-self-center text-center">
+                    <i class="ri-user-add-line"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

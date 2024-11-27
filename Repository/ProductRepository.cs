@@ -32,6 +32,24 @@ namespace Repository
             await _dbContext.SaveChangesAsync();
         }
 
+      
+        public async Task<(IEnumerable<Product> Products, int Total)> GetAllProductPaginationAsync(int pageNumber, int pageSize)
+        {
+            var productsQuery = _dbContext.Products
+                           .AsQueryable();
+
+            // Đếm tổng số lượng sản phẩm
+            int totalCount = await productsQuery.CountAsync();
+
+            // Thực hiện phân trang
+            var products = await productsQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (products, totalCount);
+        }
+
         public async Task<(IEnumerable<Product>, int totalCount)> GetListProducAsync(int pageNumber, int pageSize, decimal? minPrice = null, decimal? maxPrice = null, Guid? categoryId = null, string? keyword = null, int? type = null)
         {
             var query = _dbContext.Products.AsQueryable();

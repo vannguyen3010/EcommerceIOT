@@ -342,6 +342,47 @@ namespace Ecommerce.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetAllProductsPagination")]
+        public async Task<IActionResult> GetAllProductsPagination([FromQuery] int pageNumber, [FromQuery] int pageSize)
+        {
+            try
+            {
+                // Gọi repository để lấy sản phẩm với phân trang
+                var (products, totalCount) = await _repository.Product.GetAllProductPaginationAsync(pageNumber, pageSize);
+
+                if (!products.Any())
+                {
+                    return NotFound(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = "No products found.",
+                        Data = null
+                    });
+                }
+
+                var productDtos = _mapper.Map<IEnumerable<ProductDto>>(products);
+
+                // Trả về response với data và số lượng sản phẩm
+                return Ok(new
+                {
+                    success = true,
+                    message = "Products retrieved successfully.",
+                    data = new
+                    {
+                        totalCount,
+                        products = productDtos
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError($"Something went wrong inside GetAllProducts action: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
         private void UpdateFileUpload(UpdateProductDto request)
         {
             var allowedExtensions = new string[] { ".jpg", ".jpeg", ".png" };
@@ -362,6 +403,7 @@ namespace Ecommerce.API.Controllers
             }
 
         }
+
 
         private async Task<string> SaveFileAndGetUrl(IFormFile file, string fileName, string fileExtension)
         {

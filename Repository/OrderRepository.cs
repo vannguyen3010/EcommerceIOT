@@ -71,5 +71,31 @@ namespace Repository
         {
             await _dbContext.SaveChangesAsync();
         }
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync(int type, bool trackChanges)
+        {
+
+            IQueryable<Order> ordersQuery = _dbContext.Orders
+                .AsNoTracking()
+                .Include(o => o.CartItems)
+                .ThenInclude(x => x.Product);
+
+            // Lọc theo type
+            if (type == 1)
+            {
+                ordersQuery = ordersQuery.Where(x => x.OrderStatus);
+            }
+            else if (type == 2)
+            {
+                ordersQuery = ordersQuery.Where(x => !x.OrderStatus);
+            }
+
+            return await ordersQuery.ToListAsync();
+        }
+
+
+        public async Task UpdateOrderAsync(Order order)
+        {
+            _dbContext.Orders.Update(order);
+        }
     }
 }

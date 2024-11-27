@@ -1,0 +1,110 @@
+﻿@inject OrderServices _orderServices
+
+
+
+<div class="col-xl-6">
+    <div class="card o-hidden card-hover">
+        <div class="card-header card-header-top card-header--2 px-0 pt-0">
+            <div class="card-header-title">
+                <h4>Đơn đặt hàng gần đây</h4>
+            </div>
+
+        </div>
+
+        <div class="card-body p-0">
+            <div>
+                <div class="table-responsive scroll_recent_order">
+                    <table class="best-selling-table table border-0">
+                        <tbody>
+                            @if (listOrders != null && listOrders.Any())
+                            {
+                                @foreach (var item in listOrders)
+                                {
+
+                                    <tr>
+                                        <td>
+                                            <div class="best-product-box">
+                                                <div class="product-name">
+                                                    <h5>Mã đơn hàng</h5>
+                                                    <h6>#@item.OrderCode</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="product-detail-box">
+                                                <h6>Ngày đặt</h6>
+                                                <h5>@item.OrderDate.ToString("dd-MM-yyyy")</h5>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="product-detail-box">
+                                                <h6>Giá</h6>
+                                                <h5>@item.TotalAmount.ToString("N0") <span class="currency-symbol text-danger">đ</span></h5>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="product-detail-box">
+                                                <h6>Trang thái</h6>
+                                                @if (item.OrderStatus == true)
+                                                {
+                                                    <h5>Đã duyệt  <i class="fas fa-circle text-success text_10"></i></h5>
+                                                }
+                                                else
+                                                {
+                                                    <h5>Chưa duyệt  <i class="fas fa-circle text-danger text_10"></i></h5>
+                                                }
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private IEnumerable<OrderDto> listOrders;
+
+    private int currentPage = 1;
+    private int pageSize = 20;
+    private int totalPages;
+    private int totalCount;
+    private int? type = null;
+    private string? orderCode = null;
+
+    private bool isLoading = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadListOrders();
+    }
+
+
+    private async Task LoadListOrders()
+    {
+        isLoading = true;
+        var response = await _orderServices.GetListOrdersAsync(currentPage, pageSize, type, orderCode);
+
+        if (response != null && response.Success)
+        {
+            listOrders = response.Data.Orders;
+        }
+        else
+        {
+            listOrders = new List<OrderDto>();
+        }
+
+        await Task.Delay(1000);
+        isLoading = false;
+    }
+}
