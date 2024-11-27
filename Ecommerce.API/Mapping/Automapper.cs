@@ -4,6 +4,7 @@ using Shared.DTO.Cart;
 using Shared.DTO.CategoryIntroduce;
 using Shared.DTO.Contact;
 using Shared.DTO.Introduce;
+using Shared.DTO.Order;
 using Shared.DTO.Product;
 using Shared.DTO.Profile;
 using Shared.DTO.User;
@@ -60,6 +61,22 @@ namespace Ecommerce.API.Mapping
             CreateMap<UpdateCartItemDto, CartItem>();
 
             CreateMap<CartItemDto, CartItem>();
+
+            CreateMap<CreateOrderDto, Order>();
+
+            CreateMap<OrderItemDto, OrderItem>();
+
+            CreateMap<Order, OrderDto>();
+
+            CreateMap<OrderDto, Order>();
+
+            CreateMap<OrderItem, OrderItemDto>();
+
+            CreateMap<Order, CartItemDto>();
+
+            CreateMap<Order, CartItemDto>();
+
+            CreateMap<CartItemDto, Order>();
         }
     }
 }

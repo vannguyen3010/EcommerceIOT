@@ -12,6 +12,7 @@ namespace Repository
         private ICateProductsRepository _cateProductsRepository;
         private IProductRepository _productRepository;
         private ICartRepository _cartRepository;
+        private IOrderRepository _orderRepository;
         public RepositoryManager(RepositoryContext repositoryContext)
         {
             _repoContext = repositoryContext;
@@ -105,6 +106,19 @@ namespace Repository
                 }
 
                 return _cartRepository;
+            }
+        }
+
+        public IOrderRepository Order
+        {
+            get
+            {
+                if (_orderRepository == null)
+                {
+                    _orderRepository = new OrderRepository(_repoContext);
+                }
+
+                return _orderRepository;
             }
         }
 
