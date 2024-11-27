@@ -112,17 +112,17 @@
             keyword = searchKeyword;
         }
 
-        if (query.TryGetValue("c1", out var c1Id))
+        if (query.TryGetValue("c", out var cId))
         {
-            categoryId = new Guid(c1Id!);
-            var categoryResponse = await _productServices.GetCategoryProductByCategoryId(categoryId.Value);
+            categoryId = new Guid(cId!);
+            // var categoryResponse = await _productServices.GetCategoryProductByCategoryId(categoryId.Value);
 
-            if (categoryResponse != null && categoryResponse.Success)
-            {
-                var category = categoryResponse.Data;
+            // if (categoryResponse != null && categoryResponse.Success)
+            // {
+            //     var category = categoryResponse.Data;
 
-            }
-            await LoadListProducts();
+            // }
+            // await LoadListProducts();
         }
 
         if (query.TryGetValue("pageNumber", out var page))
@@ -221,6 +221,11 @@
         if (minPrice.HasValue)
         {
             queryParameters["minPrice"] = minPrice.Value.ToString();
+        }
+
+        if (categoryId.HasValue)
+        {
+            queryParameters["c"] = categoryId.Value.ToString();
         }
 
         if (maxPrice.HasValue)

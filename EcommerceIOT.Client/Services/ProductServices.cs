@@ -81,5 +81,19 @@ namespace EcommerceIOT.Client.Services
             return null; // Hoặc xử lý lỗi ở đây
         }
 
+        public async Task<IEnumerable<CateProductDto>> GetAllCategoryProducts()
+        {
+            var response = await _httpClient.GetAsync("/api/CateProduct/GetAllCategoryProducts");
+            if (response.IsSuccessStatusCode)
+            {
+                var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<IEnumerable<CateProductDto>>>();
+                return apiResponse?.Data ?? Enumerable.Empty<CateProductDto>();
+            }
+            else
+            {
+                return Enumerable.Empty<CateProductDto>();
+            }
+        }
+
     }
 }
