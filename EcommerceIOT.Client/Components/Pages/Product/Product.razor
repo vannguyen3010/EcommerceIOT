@@ -1,12 +1,11 @@
 ﻿@page "/san-pham"   
-
+@rendermode InteractiveServer
 <!--Hero Section-->
 <div class="hero-section hero-background style-02">
-    <h1 class="page-title">Organic Fruits</h1>
     <nav class="biolife-nav">
         <ul>
-            <li class="nav-item"><a href="index-2.html" class="permal-link">Home</a></li>
-            <li class="nav-item"><span class="current-page">Our Blog</span></li>
+            <li class="nav-item"><a onclick="window.location.href='/'" class="permal-link">Trang chủ</a></li>
+            <li class="nav-item"><span class="current-page">Sản phẩm</span></li>
         </ul>
     </nav>
 </div>
@@ -21,84 +20,26 @@
 
                 <!--articles block-->
                 <ul class="posts-list main-post-list">
-                    <li class="post-elem col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <div class="post-item effect-04 style-bottom-info">
-                            <div class="thumbnail">
-                                <a href="/chi-tiet-san-pham" class="link-to-post"><img src="https://iot-shop.de/web/image/product.template/5549/image_512" width="370" height="270" alt=""></a>
-                            </div>
-                            <div class="post-content">
-                                <h4 class="post-name"><a href="#" class="linktopost">Browan MerryIoT Helium Hotspot & TTN-Gateway (868 MHz)</a></h4>
-                                <div class="group-buttons">
-                                    <a href="/chi-tiet-san-pham" class="btn readmore">Xem thêm</a>
+                    @if(products != null && products.Any())
+                    {
+                        @foreach (var item in products)
+                        {
+                            <li class="post-elem col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="post-item effect-04 style-bottom-info">
+                                    <div class="thumbnail">
+                                        <a onclick="window.location.href='/san-pham/@item.NameSlug/@item.Id';" class="link-to-post"><img src="@(string.IsNullOrEmpty(item.ImageFilePath) ? "/Img_Dev/banner.png" : item.ImageFilePath)" width="370" height="270" alt=""></a>
+                                    </div>
+                                    <div class="post-content">
+                                        <h5 class="post-name"><a href="#" class="linktopost" style="color: red;">@((item.Price - item.Discount).ToString("N0"))</a></h5>
+                                        <h4 class="post-name"><a href="#" class="linktopost">@item.Name</a></h4>
+                                        <div class="group-buttons">
+                                            <a onclick="window.location.href='/san-pham/@item.NameSlug/@item.Id';" class="btn readmore">Xem thêm</a>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="post-elem col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <div class="post-item effect-04 style-bottom-info">
-                            <div class="thumbnail">
-                                <a href="/chi-tiet-san-pham" class="link-to-post"><img src="https://iot-shop.de/web/image/product.template/3867/image_512" width="370" height="270" alt=""></a>
-                            </div>
-                            <div class="post-content">
-                                <h4 class="post-name"><a href="#" class="linktopost">Browan MerryIoT Helium Hotspot & TTN-Gateway (868 MHz)</a></h4>
-                                <div class="group-buttons">
-                                    <a href="/chi-tiet-san-pham" class="btn readmore">Xem thêm</a>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="post-elem col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <div class="post-item effect-04 style-bottom-info">
-                            <div class="thumbnail">
-                                <a href="/chi-tiet-san-pham" class="link-to-post"><img src="https://iot-shop.de/web/image/product.template/3955/image_512" width="370" height="270" alt=""></a>
-                            </div>
-                            <div class="post-content">
-                                <h4 class="post-name"><a href="#" class="linktopost">Browan MerryIoT Helium Hotspot & TTN-Gateway (868 MHz)</a></h4>
-                                <div class="group-buttons">
-                                    <a href="/chi-tiet-san-pham" class="btn readmore">Xem thêm</a>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="post-elem col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <div class="post-item effect-04 style-bottom-info">
-                            <div class="thumbnail">
-                                <a href="/chi-tiet-san-pham" class="link-to-post"><img src="https://iot-shop.de/web/image/product.template/3991/image_512" width="370" height="270" alt=""></a>
-                            </div>
-                            <div class="post-content">
-                                <h4 class="post-name"><a href="#" class="linktopost">Browan MerryIoT Helium Hotspot & TTN-Gateway (868 MHz)</a></h4>
-                                <div class="group-buttons">
-                                    <a href="/chi-tiet-san-pham" class="btn readmore">Xem thêm</a>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="post-elem col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <div class="post-item effect-04 style-bottom-info">
-                            <div class="thumbnail">
-                                <a href="/chi-tiet-san-pham" class="link-to-post"><img src="https://iot-shop.de/web/image/product.template/4171/image_512" width="370" height="270" alt=""></a>
-                            </div>
-                            <div class="post-content">
-                                <h4 class="post-name"><a href="#" class="linktopost">Browan MerryIoT Helium Hotspot & TTN-Gateway (868 MHz)</a></h4>
-                                <div class="group-buttons">
-                                    <a href="/chi-tiet-san-pham" class="btn readmore">Xem thêm</a>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="post-elem col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <div class="post-item effect-04 style-bottom-info">
-                            <div class="thumbnail">
-                                <a href="#" class="link-to-post"><img src="https://iot-shop.de/web/image/product.template/4234/image_512" width="370" height="270" alt=""></a>
-                            </div>
-                            <div class="post-content">
-                                <h4 class="post-name"><a href="#" class="linktopost">Browan MerryIoT Helium Hotspot & TTN-Gateway (868 MHz)</a></h4>
-                                <div class="group-buttons">
-                                    <a href="#" class="btn readmore">Xem thêm</a>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
+                            </li>
+                        }
+                    }
 
                 </ul>
 
@@ -106,16 +47,197 @@
 
             <!--Panigation Block-->
             <div class="biolife-panigations-block ">
-                <ul class="panigation-contain">
-                    <li><span class="current-page">1</span></li>
-                    <li><a href="#" class="link-page">2</a></li>
-                    <li><a href="#" class="link-page">3</a></li>
-                    <li><span class="sep">....</span></li>
-                    <li><a href="#" class="link-page">20</a></li>
-                    <li><a href="#" class="link-page next"><i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
-                </ul>
+                @if (totalPages > 1)
+                {
+                    <ul class="panigation-contain">
+                        <li>
+                            <a href="javascript:void(0)" class="link-page prev @(currentPage == 1 ? "disabled" : "")"
+                               @onclick="PreviousPage" aria-label="Previous" tabindex="-1" aria-disabled="@(currentPage == 1)">
+                                <i class="fa fa-angle-left" aria-hidden="true"></i>
+                            </a>
+                        </li>
+
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            var pageNumber = i;
+                            <li>
+                                @if (pageNumber == currentPage)
+                                {
+                                    <span class="current-page">@pageNumber</span>
+                                }
+                                else
+                                {
+                                    <a href="javascript:void(0)" class="link-page" @onclick="(() => ChangePage(pageNumber))">@pageNumber</a>
+                                }
+                            </li>
+                        }
+
+                        <li>
+                            <a href="javascript:void(0)" class="link-page next @(currentPage == totalPages ? "disabled" : "")"
+                               @onclick="NextPage" aria-label="Next">
+                                <i class="fa fa-angle-right" aria-hidden="true"></i>
+                            </a>
+                        </li>
+                    </ul>
+                }
             </div>
 
         </div>
     </div>
 </div>
+
+
+@code{
+    private IEnumerable<ProductDto> products;
+
+    private int currentPage = 1;
+    private int pageSize = 9;
+    private int totalPages;
+    private int totalCount;
+    private int? type;
+
+    private Guid? categoryId = null;
+    private decimal? minPrice = null;
+    private decimal? maxPrice = null;
+    private string? keyword = null;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("keyword", out var searchKeyword))
+        {
+            keyword = searchKeyword;
+        }
+
+        if (query.TryGetValue("c1", out var c1Id))
+        {
+            categoryId = new Guid(c1Id!);
+            var categoryResponse = await _productServices.GetCategoryProductByCategoryId(categoryId.Value);
+
+            if (categoryResponse != null && categoryResponse.Success)
+            {
+                var category = categoryResponse.Data;
+
+            }
+            await LoadListProducts();
+        }
+
+        if (query.TryGetValue("pageNumber", out var page))
+        {
+            int.TryParse(page, out currentPage);
+        }
+
+        if (query.TryGetValue("type", out var typeValue))
+        {
+            int.TryParse(typeValue, out var parsedType);
+            type = parsedType;
+        }
+        await LoadListProducts();
+    }
+    private async Task LoadListProducts()
+    {
+        var response = await _productServices.GetListProductAsync(currentPage, pageSize, minPrice, maxPrice, categoryId, keyword, type);
+        if (response != null && response.Success)
+        {
+            products = response.Data.Products;
+            totalCount = response.Data.TotalCount;
+            totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+        }
+        else
+        {
+            products = new List<ProductDto>();
+        }
+    }
+
+    private async Task FilterByPrice(decimal? min, decimal? max)
+    {
+        minPrice = min;
+        maxPrice = max;
+
+        currentPage = 1;
+        await UpdateUrlAndLoadProducts();
+    }
+
+    private async Task ApplyCustomPriceRange()
+    {
+        if (minPrice.HasValue || maxPrice.HasValue)
+        {
+            currentPage = 1;
+            await UpdateUrlAndLoadProducts();
+        }
+    }
+
+    private async Task ChangePage(int page)
+    {
+        // Chỉ cập nhật nếu page khác currentPage
+        if (page != currentPage)
+        {
+            currentPage = page;
+            await UpdateUrlAndLoadProducts();
+        }
+    }
+
+    private async Task PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            await UpdateUrlAndLoadProducts();
+        }
+    }
+
+    private async Task NextPage()
+    {
+        if (currentPage < totalPages)
+        {
+            currentPage++;
+            await UpdateUrlAndLoadProducts();
+        }
+    }
+
+
+    private async Task OnPageSizeChanged(ChangeEventArgs e)
+    {
+        pageSize = int.Parse(e.Value.ToString());
+
+        currentPage = 1;
+        await UpdateUrlAndLoadProducts();
+    }
+
+    // Cập nhật URL và gọi API để lấy danh sách sản phẩm
+    private async Task UpdateUrlAndLoadProducts()
+    {
+        // Tạo URL mới với thông tin trang hiện tại, kích thước trang, và giá lọc
+        var queryParameters = new Dictionary<string, string>
+            {
+                ["pageNumber"] = currentPage.ToString(),
+                ["pageSize"] = pageSize.ToString()
+            };
+
+        // Thêm giá trị lọc theo giá vào URL nếu có
+        if (minPrice.HasValue)
+        {
+            queryParameters["minPrice"] = minPrice.Value.ToString();
+        }
+
+        if (maxPrice.HasValue)
+        {
+            queryParameters["maxPrice"] = maxPrice.Value.ToString();
+        }
+
+        if (type.HasValue)
+        {
+            queryParameters["type"] = type.Value.ToString();
+        }
+
+        // Tạo URL query string
+        var newUrl = QueryHelpers.AddQueryString("san-pham", queryParameters!);
+        NavigationManager.NavigateTo(newUrl, forceLoad: false);
+
+        // Tải lại danh sách sản phẩm
+        await LoadListProducts();
+    }
+}

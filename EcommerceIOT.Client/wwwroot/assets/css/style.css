@@ -7950,7 +7950,7 @@ li.slick-current .slider-opt04__layout01 .buttons .btn{
     z-index: 2;
     width: 670px;
     height: 535px;
-    background-image: url('/img_dev/product/product1.png');
+    /*background-image: url('/img_dev/product/product1.png');*/
     background-position: center center;
     background-repeat: no-repeat;
 }
