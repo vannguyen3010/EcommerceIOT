@@ -39,4 +39,8 @@
         public string Note { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.Now;
     }
+    public class UpdateOrderDto
+    {
+        public bool OrderStatus { get; set; }
+    }
 }

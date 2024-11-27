@@ -210,6 +210,69 @@ namespace Ecommerce.API.Controllers
             }
         }
 
+        [HttpPut]
+        [Route("UpdateOrderStatus/{Id}")]
+        public async Task<IActionResult> UpdateOrderStatus(Guid Id, [FromQuery] UpdateOrderDto updateOrderDto)
+        {
+            try
+            {
+                var order = await _repository.Order.GetOrderByIdAsync(Id, trackChanges: false);
+                if (order == null)
+                {
+                    return NotFound(new ApiResponse<Object>
+                    {
+                        Success = false,
+                        Message = $"Order with id {Id} not found.",
+                        Data = null
+                    });
+                }
+
+                order.OrderStatus = updateOrderDto.OrderStatus;
+
+                await _repository.Order.UpdateOrderAsync(order);
+                await _repository.Order.SaveAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong while updating order status: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet]
+        [Route("GetListOrdersType")]
+        public async Task<IActionResult> GetListOrdersType([FromQuery] int type = 0) // 0 tất cả, 1 là đơn hàng true, 2 là false
+        {
+            try
+            {
+                var orders = await _repository.Order.GetAllOrdersAsync(type, trackChanges: false);
+                if (orders == null || !orders.Any())
+                {
+                    return NotFound(new ApiResponse<Object>
+                    {
+                        Success = false,
+                        Message = "No pending orders found.",
+                        Data = null
+                    });
+                }
+
+                var ordersDto = _mapper.Map<IEnumerable<OrderDto>>(orders);
+                return Ok(new ApiResponse<IEnumerable<OrderDto>>
+                {
+                    Success = true,
+                    Message = "Pending orders retrieved successfully.",
+                    Data = ordersDto
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong while getting pending orders: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
         private string GenerateOrderCode()
         {
             var random = new Random();

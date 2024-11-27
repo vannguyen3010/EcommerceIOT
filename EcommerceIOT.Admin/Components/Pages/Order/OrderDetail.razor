@@ -1,0 +1,219 @@
+﻿@page "/chi-tiet-don-hang/{id:guid}"
+@using Microsoft.AspNetCore.Authorization
+
+@rendermode InteractiveServer
+
+@if (order != null)
+{
+    <div class="page-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="title-header title-header-block package-card">
+                                <div>
+                                    <h5>Đơn hàng #@order.OrderCode</h5>
+                                </div>
+                                <div class="card-order-section">
+                                    <ul>
+                                        <li>@order.OrderDate</li>
+                                        <li>@totalCart Sản phẩm</li>
+                                        <li>Tổng tiền hàng @order.TotalAmount.ToString("N0")  <span class="currency-symbol">đ</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="bg-inner cart-section order-details-table">
+                                <div class="row g-4">
+                                    <div class="col-xl-8">
+                                        <div class="table-responsive table-details">
+                                            <table class="table cart-table table-borderless">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="2">Mặt hàng</th>
+                                                        <th class="text-end" colspan="2">
+                                                            <a href="javascript:void(0)"
+                                                               class="theme-color">
+                                                                @*   Edit
+                                                            Items *@
+                                                            </a>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    @if (order.OrderItems != null && order.OrderItems.Any())
+                                                    {
+                                                        @foreach (var item in order.OrderItems)
+                                                        {
+
+                                                            <tr class="table-order">
+                                                                <td>
+                                                                    <a href="javascript:void(0)">
+                                                                        <img src="@(string.IsNullOrEmpty(item.ImageFilePath) ? "/Img_Dev/banner.png" : item.ImageFilePath)"
+                                                                             class="img-fluid blur-up lazyload" alt="order" onerror="this.onerror=null;this.src='/Img_Dev/banner.png';" style="width: unset!important;">
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="no_wrap_1">@item.ProductName</p>
+                                                                    <h5>@item.CategoryName</h5>
+                                                                </td>
+                                                                <td>
+                                                                    <p>Số lượng</p>
+                                                                    <h5>@item.Quantity</h5>
+                                                                </td>
+                                                                <td>
+                                                                    <p>Giá</p>
+                                                                    <h5>@((item.Price - item.Discount).ToString("N0")) <span class="currency-symbol text-danger">đ</span></h5>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+
+                                                <tfoot>
+                                                    <tr class="table-order">
+                                                        <td colspan="3">
+                                                            <h5>Tổng phụ :</h5>
+                                                        </td>
+                                                        <td>
+                                                            <h4>@((order.Price - order.Discount).ToString("N0")) <span class="currency-symbol text-danger">đ</span></h4>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr class="table-order">
+                                                        <td colspan="3">
+                                                            <h4 class="theme-color fw-bold">Tổng giá :</h4>
+                                                        </td>
+                                                        <td>
+                                                            <h4 class="theme-color fw-bold">@order.TotalAmount.ToString("N0")<span class="currency-symbol">đ</span> </h4>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-4">
+                                        <div class="order-success">
+                                            <div class="row g-4">
+                                                <h4>Thông tin</h4>
+                                                <ul class="order-details">
+                                                    <li>Tên: @order.UserName</li>
+                                                    <li>Phone: @order.PhoneNumber</li>
+                                                    <li>Email: @order.Email</li>
+                                                </ul>
+
+                                                <div class="payment-mode">
+                                                    <h4>Nội dung</h4>
+                                                    <p>
+                                                        @order.Note
+                                                    </p>
+                                                </div>
+
+                                                <h4> Cập nhật đơn hàng</h4>
+                                                <div class="delivery-sec">
+                                                    <ul>
+                                                        <li>
+                                                            @if (order.OrderStatus == true)
+                                                            {
+                                                                <label class="switch m-0 d-none">
+                                                                    <input type="checkbox" checked>
+                                                                    <span class="slider round"></span>
+                                                                </label>
+
+                                                                <label class="mx-2">
+                                                                    <span class="cucces_detail_true">Đã xử lý</span>
+                                                                </label>
+                                                            }
+                                                            else
+                                                            {
+                                                                <label class="switch">
+                                                                    <input type="checkbox">
+                                                                    <span class="slider round"></span>
+                                                                </label>
+                                                                <label class="mx-2">
+                                                                    <span class="cucces_detail_false">Chưa xử lý</span>
+                                                                </label>
+                                                            }
+
+
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<style>
+    .cucces_detail_true {
+        background-color: rgba(47, 135, 51, 0.15);
+        color: #2f8733;
+        padding: 5px 10px;
+        text-transform: capitalize;
+        display: inline-block;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 400;
+    }
+
+    .cucces_detail_false {
+        background-color: rgba(226, 36, 84, 0.15);
+        color: #e22454;
+        padding: 5px 10px;
+        text-transform: capitalize;
+        display: inline-block;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 400;
+    }
+</style>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    [Parameter]
+    public Guid id { get; set; }
+
+    private OrderDto order;
+
+    private int totalCart;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetOrderById();
+        // await CheckUserAuthentication();
+    }
+
+    private async Task CheckUserAuthentication()
+    {
+        var user = (await AuthenticationState!).User;
+        bool isUserAuthenticated = user.Identity!.IsAuthenticated;
+        if (!isUserAuthenticated)
+            NavigationManager.NavigateTo("/account/login");
+    }
+
+    private async Task GetOrderById()
+    {
+        var response = await _orderServices.GetOrderByIdAsync(id);
+
+        if (response != null && response.Success)
+        {
+            order = response.Data;
+            totalCart = response.Data.OrderItems.Count();
+        }
+    }
+
+
+}
