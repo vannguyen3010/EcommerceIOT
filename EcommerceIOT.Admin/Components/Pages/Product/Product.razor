@@ -1,7 +1,4 @@
-﻿@page "/quan-ly-bai-viet"
-
-
-<link href="css/introduces.css" rel="stylesheet" />
+﻿@page "/quan-ly-san-pham"
 
 @rendermode InteractiveServer
 
@@ -12,31 +9,25 @@
                 <div class="card card-table">
                     <div class="card-body">
                         <div class="title-header option-title d-sm-flex d-block">
-                            <h5>Danh sách Bài viết</h5>
-                            <div class="right-options">
-                                <ul>
-                                    <li>
-                                        <a class="btn btn-solid" onclick="window.location.href='/add-introduces'">Thêm bài viết</a>
-                                    </li>
-                                </ul>
-                            </div>
+                            <h5>Quản lý sản phẩm</h5>
                         </div>
                         <div class="icon-box icon-box-side icon-box-light d-flex align-items-center justify-content-between mb-5">
                             <div class="icon-box-content">
-                                <select class="js-example-basic-single w-100 sort_categories search_input cursor" @onchange="OnCategoryChanged" name="state" required>
-                                   
-                                    @if (cateIntroduces != null && cateIntroduces.Any())
+                                <select class="js-example-basic-single w-100 sort_categories search_input cursor" target="_self" @onchange="OnCategoryChanged" name="state" required>
+
+                                    @if (cateProducts != null && cateProducts.Any())
                                     {
-                                        <option class="cursor" value="">Chọn danh mục</option>
-                                        @foreach (var item in cateIntroduces)
+                                        <option class="cursor" value="">Tất cả</option>
+                                        @foreach (var item in cateProducts)
                                         {
                                             <option value="@item.Id">@item.Name</option>
+
                                         }
                                     }
                                 </select>
                             </div>
                             <form @onsubmit="HandleSearch" class="search_box">
-                                <input type="text" class="search_input" placeholder="Tìm kiếm bài viết..." @bind="keyword">
+                                <input type="text" class="search_input" placeholder="Tìm kiếm sản phẩm..." @bind="keyword">
                                 <button type="submit" class="search_button">
                                     <i class="fa-solid fa-magnifying-glass fs-6"></i>
                                 </button>
@@ -45,14 +36,14 @@
                         <div>
                             <div class="table-responsive">
                                 <table class="table all-package theme-table table-product" id="table_id">
-
                                     <thead>
                                         <tr>
                                             <th>Ảnh</th>
-                                            <th>Tên bài viết</th>
+                                            <th>Tên</th>
                                             <th>Danh mục</th>
+                                            <th>Ngày</th>
+                                            <th>Giá</th>
                                             <th>Nổi bật</th>
-                                            <th>Ngày đăng</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
@@ -68,59 +59,58 @@
                                                 </td>
                                             </tr>
                                         }
-                                       
-                                        else @if (listIntroduces != null && listIntroduces.Any())
+                                        else if (products != null && products.Any())
                                         {
-                                            @foreach (var item in listIntroduces)
+                                            @foreach (var item in products)
                                             {
                                                 <tr>
-                                                    <td class="@(item.Status ? "" : "table_row_disabled")">
+                                                    <td>
                                                         <div class="table-image">
-                                                            <img src="@(string.IsNullOrEmpty(item.FilePath) ? "/Img_Dev/banner.png" : item.FilePath)" class="img-fluid"
-                                                                 alt="image" onerror="this.onerror=null;this.src='/Img_Dev/banner.png';">
+                                                            <img src="@(string.IsNullOrEmpty(item.ImageFilePath) ? "/Img_Dev/banner.png" : item.ImageFilePath)" class="img-fluid"
+                                                                 alt="product" onerror="this.onerror=null;this.src='/Img_Dev/banner.png';">
                                                         </div>
                                                     </td>
 
-                                                    <td class="@(item.Status ? "" : "table_row_disabled")no_wrap_1" style="line-height: 66px;">@item.Name</td>
+                                                    <td>@item.Name</td>
 
-                                                    <td class="@(item.Status ? "" : "table_row_disabled")">@item.CategoryName</td>
+                                                    <td class="status-close">
+                                                        <span>@item.CategoryName</span>
+                                                    </td>
 
-                                                    @if (@item.IsHot == true)
+
+                                                    <td>@item.CreatedAt.ToString("dd-MM-yyyy")</td>
+
+                                                    <td class="td-price">
+                                                        <ins class="new-price text-danger" style="text-decoration: none;">@((item.Price - item.Discount).ToString("N0")) <span class="currency-symbol">đ</span></ins>
+                                                    </td>
+
+                                                    @if (item.IsHot == true)
                                                     {
-                                                        <td class="@(item.Status ? "" : "table_row_disabled")">
-                                                            Có
-                                                        </td>
+                                                        <td>Có</td>
                                                     }
                                                     else
                                                     {
-                                                        <td class="@(item.Status ? "" : "table_row_disabled")">
-                                                            Không
-                                                        </td>
+                                                        <td>Không</td>
                                                     }
-
-
-                                                    <td class="@(item.Status ? "" : "table_row_disabled")">@item.CreatedAt.ToString("dd-MM-yyyy")</td>
-
-
 
                                                     <td>
                                                         <ul>
 
                                                             <li>
-                                                                <a href="javascript:void(0)" @onclick="() => GetIntroductOrUpdate(item.id)">
+                                                                <a href="javascript:void(0)" @onclick="() => GetProductOrUpdate(item.Id)">
                                                                     <i class="ri-pencil-line"></i>
                                                                 </a>
                                                             </li>
 
                                                             <li>
-
-                                                                <a href="javascript:void(0)" @onclick="() => DeleteIntroduce(item.id)">
+                                                                <a href="javascript:void(0)" @onclick="() => DeleteProduct(item.Id)">
                                                                     <i class="ri-delete-bin-line"></i>
                                                                 </a>
                                                             </li>
                                                         </ul>
                                                     </td>
                                                 </tr>
+
                                             }
                                         }
                                         else
@@ -130,14 +120,12 @@
                                                     <div class="d-flex justify-content-center">
                                                         <img src="img_dev/datanull.png" class="img-fluid" alt="Image" />
                                                     </div>
-                                                    <span>Không có bài viết nào !</span>
+                                                    <span>Không có sản phẩm nào !</span>
                                                 </td>
                                             </tr>
                                         }
-
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                     </div>
@@ -174,22 +162,23 @@
     </div>
 </div>
 
-
 @code {
     [CascadingParameter]
     public Task<AuthenticationState>? AuthenticationState { get; set; }
 
-    private IEnumerable<IntroduceDto> listIntroduces;
-    private IEnumerable<CategoryIntroduceDto> cateIntroduces;
+    private IEnumerable<ProductDto> products;
+    private IEnumerable<CateProductDto> cateProducts;
 
-    private Guid? categoryId = null;
-    private string? keyword = null;
     private int currentPage = 1;
-    private int pageSize = 10;
+    private int pageSize = 20;
     private int totalPages;
     private int totalCount;
-    private int totalIntroduces;
-    private int? type = null;
+    private int? type;
+
+    private Guid? categoryId = null;
+    private decimal? minPrice = null;
+    private decimal? maxPrice = null;
+    private string? keyword = null;
 
     private bool isLoading = false;
     private Dictionary<Guid, bool> LoadingStates = new Dictionary<Guid, bool>();
@@ -199,6 +188,12 @@
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         var query = QueryHelpers.ParseQuery(uri.Query);
 
+
+        if (query.TryGetValue("pageNumber", out var page))
+        {
+            int.TryParse(page, out currentPage);
+        }
+
         if (query.TryGetValue("categoryId", out var category))
         {
             if (Guid.TryParse(category, out var parsedCategoryId))
@@ -207,18 +202,14 @@
             }
         }
 
-        if (query.TryGetValue("pageNumber", out var page))
+        if (query.TryGetValue("keyword", out var key))
         {
-            int.TryParse(page, out currentPage);
+            keyword = key.ToString();
         }
 
-        if (query.TryGetValue("keyword", out var searchKeyword))
-        {
-            keyword = searchKeyword;
-        }
-
-        await LoadListIntroduces();
-        await LoadListCategoriesIntroduces();
+        // await CheckUserAuthentication();
+        await LoadListProducts();
+        await LoadCategories();
     }
 
     private async Task CheckUserAuthentication()
@@ -228,42 +219,44 @@
         if (!isUserAuthenticated)
             NavigationManager.NavigateTo("/account/login");
     }
+    private async Task GetProductOrUpdate(Guid id)
+    {
+        NavigationManager.NavigateTo($"/cap-nhat-san-pham/{id}", forceLoad: true);
+    }
 
-    private async Task LoadListIntroduces()
+
+    private async Task LoadCategories()
+    {
+        cateProducts = await _categoriesProductServices.GetAllCategoryProducts();
+    }
+
+    private async Task LoadListProducts()
     {
         isLoading = true;
-        var response = await _introduceServices.GetListIntroduceTypeAsync(currentPage, pageSize, categoryId, keyword, type);
 
+        var response = await _productServices.GetListProductAsync(currentPage, pageSize, minPrice, maxPrice, categoryId, keyword, type);
         if (response != null && response.Success)
         {
-            listIntroduces = response.Data.Introduces;
+            products = response.Data.Products;
             totalCount = response.Data.TotalCount;
             totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
         }
         else
         {
-            listIntroduces = new List<IntroduceDto>();
+            products = new List<ProductDto>();
         }
 
+        await Task.Delay(1000);
         isLoading = false;
-    }
-
-    private async Task LoadListCategoriesIntroduces()
-    {
-        var response = await _categoryIntroduceServices.GetAllCategoryPaginationAsync(currentPage, pageSize, keyword);
-
-        if (response != null && response.Success)
-        {
-            cateIntroduces = response.Data.categories;
-        }
     }
 
     private async Task ChangePage(int page)
     {
+        // Chỉ cập nhật nếu page khác currentPage
         if (page != currentPage)
         {
             currentPage = page;
-            await UpdateUrlAndLoadIntroduces();
+            await UpdateUrlAndLoadProducts();
         }
     }
 
@@ -272,7 +265,7 @@
         if (currentPage > 1)
         {
             currentPage--;
-            await UpdateUrlAndLoadIntroduces();
+            await UpdateUrlAndLoadProducts();
         }
     }
 
@@ -281,7 +274,7 @@
         if (currentPage < totalPages)
         {
             currentPage++;
-            await UpdateUrlAndLoadIntroduces();
+            await UpdateUrlAndLoadProducts();
         }
     }
 
@@ -290,38 +283,7 @@
         pageSize = int.Parse(e.Value.ToString());
 
         currentPage = 1;
-        await UpdateUrlAndLoadIntroduces();
-    }
-
-    private async Task HandleSearch()
-    {
-        currentPage = 1;
-        await UpdateUrlAndLoadIntroduces();
-
-    }
-
-    private async Task DeleteIntroduce(Guid id)
-    {
-        LoadingStates[id] = true;
-        bool isDeleted = await _introduceServices.DeleteIntroduceAsync(id);
-
-        if (isDeleted)
-        {
-            await LoadListIntroduces();
-        }
-
-        LoadingStates[id] = false;
-    }
-
-    private bool IsLoading(Guid id)
-    {
-        return LoadingStates.ContainsKey(id) && LoadingStates[id];
-    }
-
-
-    private async Task GetIntroductOrUpdate(Guid id)
-    {
-        NavigationManager.NavigateTo($"/cap-nhat-bai-viet/{id}", forceLoad: true);
+        await UpdateUrlAndLoadProducts();
     }
 
     private async Task OnCategoryChanged(ChangeEventArgs e)
@@ -330,16 +292,44 @@
         categoryId = string.IsNullOrEmpty(selectedValue) ? (Guid?)null : Guid.Parse(selectedValue);
 
         currentPage = 1;
-        await UpdateUrlAndLoadIntroduces();
+        await UpdateUrlAndLoadProducts();
     }
 
-    private async Task UpdateUrlAndLoadIntroduces()
+    private async Task HandleSearch()
     {
+        currentPage = 1;
+        await UpdateUrlAndLoadProducts();
+
+    }
+
+    private async Task DeleteProduct(Guid id)
+    {
+        LoadingStates[id] = true;
+
+        bool isDeleted = await _productServices.DeleteProductByIdAsync(id);
+
+        if (isDeleted)
+        {
+            await LoadListProducts();
+        }
+
+        await Task.Delay(1000);
+        LoadingStates[id] = false;
+    }
+
+    private bool IsLoading(Guid id)
+    {
+        return LoadingStates.ContainsKey(id) && LoadingStates[id];
+    }
+
+    private async Task UpdateUrlAndLoadProducts()
+    {
+        // Tạo URL mới với thông tin trang hiện tại, kích thước trang, và giá lọc
         var queryParameters = new Dictionary<string, string>
-            {
-                ["pageNumber"] = currentPage.ToString(),
-                ["pageSize"] = pageSize.ToString()
-            };
+        {
+            ["pageNumber"] = currentPage.ToString(),
+            ["pageSize"] = pageSize.ToString()
+        };
 
         if (!string.IsNullOrEmpty(keyword))
         {
@@ -351,10 +341,11 @@
             queryParameters["categoryId"] = categoryId.Value.ToString();
         }
 
-        var newUrl = QueryHelpers.AddQueryString("quan-ly-bai-viet", queryParameters!);
-
+        // Tạo URL query string
+        var newUrl = QueryHelpers.AddQueryString("/quan-ly-san-pham", queryParameters!);
         NavigationManager.NavigateTo(newUrl, forceLoad: false);
 
-        await LoadListIntroduces();
+        // Tải lại danh sách sản phẩm
+        await LoadListProducts();
     }
 }
