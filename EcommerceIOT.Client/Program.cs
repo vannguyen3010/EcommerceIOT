@@ -1,5 +1,8 @@
+using Blazored.LocalStorage;
 using EcommerceIOT.Client.Components;
+using EcommerceIOT.Client.Helpers;
 using EcommerceIOT.Client.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Options;
 
 namespace EcommerceIOT.Client
@@ -21,6 +24,11 @@ namespace EcommerceIOT.Client
             builder.Services.AddScoped<ProfileServices>();
             builder.Services.AddScoped<IntroducesServices>();
             builder.Services.AddScoped<ProductServices>();
+            builder.Services.AddScoped<CartServices>();
+            builder.Services.AddScoped<OrderServices>();
+            builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+
+            builder.Services.AddBlazoredLocalStorage();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

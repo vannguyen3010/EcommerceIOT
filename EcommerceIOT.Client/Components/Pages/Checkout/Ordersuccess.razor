@@ -1,0 +1,159 @@
+﻿@page "/order-success/{orderId:guid}"
+
+@rendermode InteractiveServer
+<link href="css/ordersucess.css" rel="stylesheet" />
+
+@if (order != null)
+{
+	<div id="content" class="container site-content sidebar-full">
+
+		<div id="primary" class="content-area">
+
+			<main id="main" class="site-main">
+
+				<article id="post-10" class="post-10 page type-page status-publish hentry">
+					<div class="entry-content">
+						<div class="woocommerce">
+							<div class="woocommerce-order">
+								<p class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received">
+									Cảm ơn quý khách đã mua hàng của chúng tôi!
+								</p>
+
+								<ul class="woocommerce-order-overview woocommerce-thankyou-order-details order_details">
+
+									<li class="woocommerce-order-overview__order order">
+										Mã đơn:<strong>@order.OrderCode</strong>
+									</li>
+
+									<li class="woocommerce-order-overview__date date">
+										Ngày đặt<strong>@order.OrderDate.ToString("dd-MM-yyyy")</strong>
+									</li>
+
+									<li class="woocommerce-order-overview__email email">
+										Email: <strong>@order.Email</strong>
+									</li>
+
+									<li class="woocommerce-order-overview__total total">
+										Tổng đơn hàng:<strong><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"></span>@order.TotalAmount.ToString("N0") đ</bdi></span></strong>
+									</li>
+
+									<li class="woocommerce-order-overview__payment-method method">
+										Phương thức thanh toán :<strong>Shop sẽ liên hệ trao đổi đơn hàng!</strong>
+									</li>
+
+								</ul>
+
+
+								<section class="woocommerce-order-details">
+
+									<h2 class="woocommerce-order-details__title">Giỏ hàng</h2>
+
+									<table class="woocommerce-table woocommerce-table--order-details shop_table order_details">
+
+										<thead>
+											<tr>
+												<th class="woocommerce-table__product-name product-name">Sản phẩm</th>
+												<th class="woocommerce-table__product-table product-total">Giá</th>
+											</tr>
+										</thead>
+
+										<tbody>
+											@if (order.OrderItems != null && order.OrderItems.Any())
+											{
+												foreach (var item in order.OrderItems)
+												{
+													<tr class="woocommerce-table__line-item order_item">
+
+														<td class="woocommerce-table__product-name product-name">
+															<a>@item.ProductName</a> <strong class="product-quantity">×@item.Quantity</strong>
+														</td>
+
+														<td class="woocommerce-table__product-total product-total">
+															<span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"></span>@((item.Price - item.Discount).ToString("N0")) đ</bdi></span>
+														</td>
+
+													</tr>
+												}
+											}
+											
+
+										</tbody>
+
+										<tfoot>
+											<tr>
+												<th scope="row">Thành tiền:</th>
+												<td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"></span>@order.TotalAmount.ToString("N0") </span></td>
+											</tr>
+											<tr>
+												<th scope="row">Phương thức thanh toán:</th>
+												<td>Chuyển khoản</td>
+											</tr>
+											<tr>
+												<th>Ghi chú:</th>
+												<td>@order.Note</td>
+											</tr>
+										</tfoot>
+									</table>
+
+								</section>
+
+								<section class="woocommerce-customer-details">
+
+
+									<section class="woocommerce-columns woocommerce-columns--2 woocommerce-columns--addresses col2-set addresses">
+										
+
+										<div class="woocommerce-column woocommerce-column--2 woocommerce-column--shipping-address col-2">
+											<h2 class="woocommerce-column__title">Thông tin đặt hàng</h2>
+											<address>
+												@order.UserName<br>@order.Email<br>@order.Address
+
+											</address>
+										</div><!-- /.col-2 -->
+
+									</section><!-- /.col2-set -->
+
+
+
+								</section>
+
+
+							</div>
+						</div>
+					</div><!-- .entry-content -->
+				</article><!-- #post-## -->
+
+			</main><!-- #main -->
+
+		</div><!-- #primary -->
+
+
+	</div>
+}
+
+
+@code {
+	[Parameter]
+	public Guid orderId { get; set; }
+
+	private OrderDto order;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadOrderSuccess();
+	}
+
+	private async Task LoadOrderSuccess()
+	{
+		var response = await _orderServices.GetOrderByIdAsync(orderId);
+		if (response.Success && response.Data != null)
+		{
+			order = response.Data;
+		}
+	}
+
+	private async Task CopyOrderCode(string orderCode)
+	{
+		await JSRuntime.InvokeVoidAsync("copyToClipboard", orderCode);
+	}
+}

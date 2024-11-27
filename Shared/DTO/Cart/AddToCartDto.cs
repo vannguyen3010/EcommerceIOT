@@ -15,7 +15,6 @@
         public string Name { get; set; }
         public string NameSlug { get; set; }
         public int Quantity { get; set; }
-        public int StockQuantity { get; set; }
         public decimal Price { get; set; }
         public decimal Discount { get; set; }
         public decimal FinalPrice { get; set; }
@@ -26,5 +25,10 @@
         public Guid ProductId { get; set; }
         public string UserId { get; set; }
         public int Quantity { get; set; }
+    }
+    public class CartDtos
+    {
+        public IEnumerable<CartItemDto> Items { get; set; }
+        public decimal TotalPrice { get; set; }
     }
 }

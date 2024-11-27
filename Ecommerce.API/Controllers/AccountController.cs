@@ -33,7 +33,6 @@ namespace Ecommerce.API.Controllers
 
         [HttpPost]
         [Route("Register")]
-        [AllowAnonymous]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDto request)
         {
             if (request == null || !ModelState.IsValid)
@@ -107,7 +106,7 @@ namespace Ecommerce.API.Controllers
 
             await _userManager.ResetAccessFailedCountAsync(user);
 
-            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
+            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token,  UserId = user.Id });
         }
 
         [HttpGet]

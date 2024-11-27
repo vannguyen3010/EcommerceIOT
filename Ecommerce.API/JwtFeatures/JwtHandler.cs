@@ -42,7 +42,9 @@ namespace Ecommerce.API.JwtFeatures
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Email)
+                  new Claim(ClaimTypes.Name, user.UserName!),
+                new Claim(ClaimTypes.Email, user.Email!),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
             var roles = await _userManager.GetRolesAsync(user);
