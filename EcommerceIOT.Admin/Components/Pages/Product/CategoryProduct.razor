@@ -1,0 +1,104 @@
+﻿@page "/quan-ly-danh-muc-san-pham"
+
+<link href="css/introduces.css" rel="stylesheet" />
+@rendermode InteractiveServer
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card card-table">
+                    <div class="card-body">
+                        <div class="title-header option-title d-sm-flex d-block">
+                            <h5>Danh mục sản phẩm</h5>
+                            <form class="d-inline-flex">
+                                <a onclick="window.location.href='/them-danh-muc-san-pham'"
+                                class="align-items-center btn btn-theme d-flex">
+                                    <i data-feather="plus-square"></i>Thêm mới Danh mục
+                                </a>
+                            </form>
+                        </div>
+                        <div>
+                            <div class="table-responsive">
+                                <table class="table all-package theme-table table-product" id="table_id">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên Danh mục</th>
+                                            <th>Ngày</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @if(cateProducts != null && cateProducts.Any())
+                                        {
+                                            @foreach (var item in cateProducts)
+                                            {
+                                                <tr>
+                                                    <td>@item.Name</td>
+
+                                                    <td>@item.CreateAt.ToString("dd-MM-yyyy")</td>
+
+
+                                                    <td>
+                                                        <ul>
+                                                            <li>
+                                                                <a href="javascript:void(0)" @onclick="() => GetIntroductOrUpdate(item.Id)">
+                                                                    <i class="ri-pencil-line"></i>
+                                                                </a>
+                                                            </li>
+
+                                                            <li>
+                                                                <a href="javascript:void(0)" @onclick="() => DeleteCategory(item.Id)">
+                                                                    <i class="ri-delete-bin-line"></i>
+                                                                </a>
+                                                            </li>
+
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    [CascadingParameter] 
+    public Task<AuthenticationState>? AuthenticationState { get; set; }
+    private IEnumerable<CateProductDto> cateProducts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadListCategoriesProducts();
+    }
+
+    private async Task LoadListCategoriesProducts()
+    {
+        cateProducts = await _categoriesProductServices.GetAllCategoryProducts();
+    }
+
+    private async Task DeleteCategory(Guid id)
+    {
+        bool isDeleted = await _categoriesProductServices.DeleteCategoryProductAsync(id);
+
+        if (isDeleted)
+        {
+            await LoadListCategoriesProducts();
+        }
+    }
+    private async Task GetIntroductOrUpdate(Guid id)
+    {
+        NavigationManager.NavigateTo($"/cap-nhat-danh-muc-san-pham/{id}", forceLoad: true);
+    }
+}

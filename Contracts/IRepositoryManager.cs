@@ -6,6 +6,8 @@
         IProfileRepository Profile { get; }
         ICateIntroduceRepository CateIntroduce { get; }
         IIntroduceRepository Introduce { get; }
+        ICateProductsRepository CateProduct { get; }
+        IProductRepository Product { get; }
         void SaveAsync();
     }
 }

@@ -3,6 +3,7 @@ using Entities.Models;
 using Shared.DTO.CategoryIntroduce;
 using Shared.DTO.Contact;
 using Shared.DTO.Introduce;
+using Shared.DTO.Product;
 using Shared.DTO.Profile;
 using Shared.DTO.User;
 
@@ -37,6 +38,18 @@ namespace Ecommerce.API.Mapping
             CreateMap<New, IntroduceDto>();
 
             CreateMap<UpdateIntroduceDto, New>();
+
+            CreateMap<CreateCateProductDto, CateProduct>();
+
+            CreateMap<CateProduct, CateProductDto>();
+
+            CreateMap<UpdateCateProductDto, CateProduct>();
+
+            CreateMap<CreateProductDto, Product>();
+
+            CreateMap<Product, ProductDto>();
+
+            CreateMap<UpdateProductDto, Product>();
 
 
         }

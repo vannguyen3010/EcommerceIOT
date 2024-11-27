@@ -9,6 +9,8 @@ namespace Repository
         private IProfileRepository _ProfileInfo;
         private ICateIntroduceRepository _categoryIntroduce;
         private IIntroduceRepository _introduceRepository;
+        private ICateProductsRepository _cateProductsRepository;
+        private IProductRepository _productRepository;
         public RepositoryManager(RepositoryContext repositoryContext)
         {
             _repoContext = repositoryContext;
@@ -66,6 +68,31 @@ namespace Repository
             }
         }
 
+        public ICateProductsRepository CateProduct
+        {
+            get
+            {
+                if (_cateProductsRepository == null)
+                {
+                    _cateProductsRepository = new CateProductsRepository(_repoContext);
+                }
+
+                return _cateProductsRepository;
+            }
+        }
+
+        public IProductRepository Product
+        {
+            get
+            {
+                if (_productRepository == null)
+                {
+                    _productRepository = new ProductRepository(_repoContext);
+                }
+
+                return _productRepository;
+            }
+        }
 
         public void SaveAsync() => _repoContext.SaveChanges();
     }

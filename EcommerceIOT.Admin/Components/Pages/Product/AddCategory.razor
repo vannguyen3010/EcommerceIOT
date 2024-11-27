@@ -1,0 +1,81 @@
+﻿@page "/them-danh-muc-san-pham"
+
+@rendermode InteractiveServer
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-sm-8 m-auto">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-header-2">
+                                    <h5>Category Information</h5>
+                                </div>
+
+                                <form class="theme-form theme-form-2 mega-form" @onsubmit="HandleSubmit">
+                                    <div class="mb-4 row align-items-center">
+                                        <label class="form-label-title col-sm-3 mb-0">Tên danh mục</label>
+                                        <div class="col-sm-9">
+                                            <input class="form-control" type="text"
+                                                   placeholder="Nhập tên" @bind="newCategories.Name" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary buttonload">Thêm</button>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(message))
+                                    {
+                                        <div class="alert alert-success mt-4">@message</div>
+                                    }
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    private CreateCateProductDto newCategories = new CreateCateProductDto();
+    private IEnumerable<CateProductDto> cateProducts;
+
+    private string message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // await CheckUserAuthentication();
+        // await LoadCategories();
+    }
+
+    private async Task CheckUserAuthentication()
+    {
+        var user = (await AuthenticationState!).User;
+        bool isUserAuthenticated = user.Identity!.IsAuthenticated;
+        if (!isUserAuthenticated)
+            NavigationManager.NavigateTo("/account/login");
+    }
+
+    private async Task HandleSubmit()
+    {
+        var success = await _categoriesProductServices.CreateCategoriesAsync(newCategories);
+        if (success)
+        {
+            newCategories = new CreateCateProductDto();
+            message = "Tạo bài viết thành công";
+        }
+        else
+        {
+            message = "Tạo bài viết thất bại";
+        }
+    }
+
+}
