@@ -28,7 +28,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPost]
         [Route("CreateCategoryProduct")]
-        public async Task<IActionResult> CreateCategoryProduct([FromForm] CreateCateProductDto createCategoryDto)
+        public async Task<IActionResult> CreateCategoryProduct([FromBody] CreateCateProductDto createCategoryDto)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPut]
         [Route("UpdateCategoryProduct/{id}")]
-        public async Task<IActionResult> UpdateCategoryProduct(Guid id, [FromForm] UpdateCateProductDto updateCateProduct)
+        public async Task<IActionResult> UpdateCategoryProduct(Guid id, [FromBody] UpdateCateProductDto updateCateProduct)
         {
             try
             {
@@ -199,5 +199,49 @@ namespace Ecommerce.API.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+        [HttpGet]
+        [Route("GetCategoryProductByCategoryId/{id}")]
+        public async Task<IActionResult> GetCategoryProductByCategoryId(Guid id)
+        {
+            try
+            {
+                // Lấy category cấp 1 theo id
+                var currentCategory = await _repository.CateProduct.GetCategoryProductByIdAsync(id, trackChanges: false);
+                if (currentCategory == null)
+                {
+                    _logger.LogError($"Category with id: {id} not found.");
+                    return NotFound(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = $"Category with id: {id} not found.",
+                        Data = null
+                    });
+                }
+
+                //Chuyển đổi dữ liệu sang DTO
+                var currentCategoryDto = _mapper.Map<CateProductDto>(currentCategory);
+
+
+                return Ok(new ApiResponse<CateProductDto>
+                {
+                    Success = true,
+                    Message = "Category retrieved successfully.",
+                    Data = currentCategoryDto
+                });
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError($"Something went wrong inside GetCategoryById action: {ex.Message}");
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Internal server error",
+                    Data = null
+                });
+            }
+        }
+
     }
 }

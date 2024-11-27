@@ -1,0 +1,84 @@
+﻿@page "/cap-nhat-danh-muc-san-pham/{id:guid}"
+
+
+@rendermode InteractiveServer
+
+@if (category != null)
+{
+
+    <div class="page-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-sm-8 m-auto">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-header-2">
+                                        <h5>Cập nhật danh mục</h5>
+                                    </div>
+
+                                    <form class="theme-form theme-form-2 mega-form">
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="form-label-title col-sm-3 mb-0">Tên</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" type="text" @bind="category.Name">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" @onclick="HandleUpdateCategory">Cập nhật</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    [Parameter]
+    public Guid id { get; set; }
+    private CateProductDto category;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCategoryById();
+    }
+
+    private async Task CheckUserAuthentication()
+    {
+        var user = (await AuthenticationState!).User;
+        bool isUserAuthenticated = user.Identity!.IsAuthenticated;
+        if (!isUserAuthenticated)
+            NavigationManager.NavigateTo("/account/login");
+    }
+
+    private async Task GetCategoryById()
+    {
+        var response = await _categoriesProductServices.GetCateProductByIdAsync(id);
+
+        if (response != null && response.Success)
+        {
+            category = response.Data;
+        }
+    }
+
+    private async Task HandleUpdateCategory()
+    {
+
+        var updateDto = new UpdateCateProductDto { Name = category.Name };
+        bool isSuccess = await _categoriesProductServices.UpdateCateProductAsync(id, updateDto);
+        if (isSuccess)
+        {
+            NavigationManager.NavigateTo("/quan-ly-danh-muc-san-pham", forceLoad: true);
+        }
+    }
+
+}
