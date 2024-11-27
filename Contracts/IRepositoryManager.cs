@@ -9,6 +9,7 @@
         ICateProductsRepository CateProduct { get; }
         IProductRepository Product { get; }
         ICartRepository Cart { get; }
+        IOrderRepository Order { get; }
         void SaveAsync();
     }
 }
